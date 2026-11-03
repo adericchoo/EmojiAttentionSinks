@@ -3,5 +3,6 @@ transformers==4.44.2
 tokenizers==0.19.1
 numpy==1.26.4
 pyyaml==6.0.2
+matplotlib==3.9.2  # C2 figures
 pytest==8.3.2
 
