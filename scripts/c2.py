@@ -37,6 +37,9 @@ def main():
     sp.add_argument("--probes", default=None, help="probe JSONL (default: outputs/c2/probes/probes_<model>.jsonl)")
     sp.add_argument("--device", default="cpu", help="cpu | mps | cuda")
     sp.add_argument("--limit", type=int, default=None, help="only the first N matched sets (smoke test)")
+    sp = sub.add_parser("figures", help="DEVELOPMENT PILOT figures from a dev run")
+    sp.add_argument("--model", default="pythia")
+    sp.add_argument("--run", default=None, help="run directory (default: latest dev run)")
     a = ap.parse_args()
 
     if a.cmd == "audit":
@@ -57,6 +60,9 @@ def main():
     elif a.cmd == "run":
         from c2 import runner
         runner.main(a.model, a.split, a.probes, a.device, a.limit)
+    elif a.cmd == "figures":
+        from c2 import figures
+        figures.main(a.model, a.run)
 
 
 if __name__ == "__main__":
