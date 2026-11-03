@@ -91,7 +91,7 @@ def readable_piece(tok, tid: int) -> str:
                 ch = raw[i:j].decode("utf-8")
             except UnicodeDecodeError:
                 continue
-            out += "␣" if ch == " " else ch
+            out += ch.replace(" ", "␣")
             i = j
             break
         else:
