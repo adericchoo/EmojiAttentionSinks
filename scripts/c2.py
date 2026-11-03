@@ -23,11 +23,15 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("audit", help="tokenisation audit for both models")
+    sub.add_parser("controls", help="screen control fillers (w, s, x, p, r) for both models")
     a = ap.parse_args()
 
     if a.cmd == "audit":
         from c2 import audit_report
         audit_report.main()
+    elif a.cmd == "controls":
+        from c2 import controls_report
+        controls_report.main()
 
 
 if __name__ == "__main__":
