@@ -1,0 +1,25 @@
+# Recreate the dev environment exactly:
+#     conda env create -f environment.yml
+#     conda activate eas
+#
+# NOTE on torch: this pins the CPU build for laptop development. On the lab GPU
+# box, remove the "cpuonly" line and install the matching CUDA build instead,
+# e.g.  conda install pytorch pytorch-cuda=12.1 -c pytorch -c nvidia
+# (everything else stays the same).
+
+name: eas
+channels:
+  - pytorch
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pytorch=2.5.1
+  - cpuonly
+  - numpy=1.26.4
+  - sympy=1.13.1 # torch 2.5.1 requires exactly this; prevents the WinError pip conflict
+  - pyyaml=6.0.2
+  - pytest=8.3.2
+  - pip
+  - pip:
+      - transformers==4.44.2
+      - tokenizers==0.19.1

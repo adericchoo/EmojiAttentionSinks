@@ -1,0 +1,15 @@
+# Pin each model to an exact commit SHA for reproducibility.
+# Find the SHA on the model's HuggingFace page -> "Files and versions" -> copy the
+# commit hash. Replace "FILL_ME" before any run you intend to report.
+
+primary:
+  name: EleutherAI/pythia-410m
+  revision: "9879c9b5f8bea9051dcb0e68dff21493d67e9d4f"
+
+replication:
+  name: Qwen/Qwen2.5-0.5B
+  revision: "060db6499f32faf8b98477b0a26969ef7d8b9987"
+
+defaults:
+  max_tokens: 256 # capture_attention refuses longer sequences (O(L*H*n^2) memory)
+  dtype: float32 # keep fp32 for exact, reproducible attention on small models
