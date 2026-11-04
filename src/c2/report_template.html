@@ -1,0 +1,798 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>C2 Results Viewer</title>
+<!-- Template for `python scripts/c2.py report` (src/c2/report.py). Data comes from data/*.js next to this file. -->
+<style>
+:root {
+  --bg: #f7f6f3; --surface: #ffffff; --ink: #0b0b0b; --ink2: #52514e; --muted: #898781;
+  --grid: #e8e7e1; --axis: #c3c2b7; --line: #e1e0d9; --chip: #f0efec;
+  --warn-bg: #fdecea; --warn-ink: #b02a2a; --ok-ink: #13744f; --ok-bg: #e3f5ec;
+  --accent: #2a78d6;
+  --c-e: #eb6834; --c-w: #2a78d6; --c-s: #1baf7a; --c-x: #c98a00; --c-p: #e87ba4; --c-r: #6250d6;
+  --m-pythia410m: #2a78d6; --m-qwen25_05b: #eb6834;
+  --reg-prefix: #898781; --reg-slot: #eb6834; --reg-buffer: #1baf7a; --reg-q: #2a78d6; --reg-after: #c3c2b7;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121211; --surface: #1c1c1a; --ink: #f2f1ec; --ink2: #c3c2b7; --muted: #8f8d86;
+    --grid: #2c2b28; --axis: #4a4944; --line: #33322f; --chip: #2a2926;
+    --warn-bg: #3a1d1b; --warn-ink: #ff9b91; --ok-ink: #6fd8a8; --ok-bg: #16352a;
+    --accent: #5b9ae6;
+    --c-e: #f08a5e; --c-w: #5b9ae6; --c-s: #3fc795; --c-x: #f0b52e; --c-p: #ef9cbd; --c-r: #8f80ea;
+    --m-pythia410m: #5b9ae6; --m-qwen25_05b: #f08a5e;
+    --reg-prefix: #77756f; --reg-slot: #f08a5e; --reg-buffer: #3fc795; --reg-q: #5b9ae6; --reg-after: #4a4944;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121211; --surface: #1c1c1a; --ink: #f2f1ec; --ink2: #c3c2b7; --muted: #8f8d86;
+  --grid: #2c2b28; --axis: #4a4944; --line: #33322f; --chip: #2a2926;
+  --warn-bg: #3a1d1b; --warn-ink: #ff9b91; --ok-ink: #6fd8a8; --ok-bg: #16352a;
+  --accent: #5b9ae6;
+  --c-e: #f08a5e; --c-w: #5b9ae6; --c-s: #3fc795; --c-x: #f0b52e; --c-p: #ef9cbd; --c-r: #8f80ea;
+  --m-pythia410m: #5b9ae6; --m-qwen25_05b: #f08a5e;
+  --reg-prefix: #77756f; --reg-slot: #f08a5e; --reg-buffer: #3fc795; --reg-q: #5b9ae6; --reg-after: #4a4944;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.5 -apple-system, "Helvetica Neue", Arial, sans-serif; }
+header { background: var(--surface); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 5; }
+.wrap { max-width: 1240px; margin: 0 auto; padding: 0 16px; }
+.top { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; padding: 14px 0 6px; }
+.top h1 { font-size: 18px; margin: 0; }
+.top .sub { color: var(--muted); font-size: 12px; }
+.top .spacer { flex: 1; }
+nav { display: flex; gap: 2px; overflow-x: auto; }
+nav a { padding: 8px 12px; color: var(--ink2); text-decoration: none; border-bottom: 2px solid transparent; white-space: nowrap; }
+nav a.on { color: var(--ink); border-bottom-color: var(--accent); font-weight: 600; }
+main { padding: 20px 0 60px; }
+h2 { font-size: 17px; margin: 28px 0 6px; }
+h2:first-child { margin-top: 0; }
+h3 { font-size: 14px; margin: 18px 0 6px; }
+p.lead { color: var(--ink2); margin: 0 0 14px; max-width: 820px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; margin: 12px 0; }
+.grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+.tile { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+.tile .k { color: var(--ink2); font-size: 12px; }
+.tile .v { font-size: 22px; font-weight: 600; font-variant-numeric: tabular-nums; margin: 2px 0; }
+.tile .n { color: var(--muted); font-size: 12px; }
+.banner { border-radius: 8px; padding: 10px 14px; margin: 0 0 14px; font-weight: 600; background: var(--warn-bg); color: var(--warn-ink); }
+.banner small { display: block; font-weight: 400; color: var(--ink2); }
+.status { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; padding: 2px 8px; border-radius: 99px; font-weight: 600; }
+.status.ok { background: var(--ok-bg); color: var(--ok-ink); }
+.status.bad { background: var(--warn-bg); color: var(--warn-ink); }
+.status.none { background: var(--chip); color: var(--ink2); }
+.controls { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; margin: 8px 0 12px; }
+.controls label { font-size: 12px; color: var(--ink2); display: inline-flex; gap: 6px; align-items: center; }
+select, input[type=search] { font: inherit; font-size: 13px; padding: 4px 8px; border: 1px solid var(--axis); border-radius: 6px; background: var(--surface); color: var(--ink); }
+input[type=search] { min-width: 200px; }
+button { font: inherit; font-size: 13px; padding: 4px 10px; border: 1px solid var(--axis); border-radius: 6px; background: var(--surface); color: var(--ink); cursor: pointer; }
+button.on { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+th, td { text-align: left; padding: 5px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { color: var(--ink2); font-weight: 600; font-size: 12px; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.scroll { overflow-x: auto; max-width: 100%; }
+main, .card, .two > * { min-width: 0; }
+.chip { display: inline-block; padding: 1px 5px; margin: 1px 2px 1px 0; border-radius: 4px; background: var(--chip); font: 12px/1.6 ui-monospace, Menlo, monospace; white-space: pre; }
+.chip.frag { background: color-mix(in srgb, var(--c-e) 22%, var(--surface)); }
+.strip .chip { color: #fff; }
+.strip .chip.prefix { background: var(--reg-prefix); }
+.strip .chip.slot { background: var(--reg-slot); }
+.strip .chip.buffer { background: var(--reg-buffer); }
+.strip .chip.q { background: var(--reg-q); }
+.strip .chip.after { background: var(--reg-after); color: var(--ink); }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; color: var(--ink2); margin: 6px 0; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+.legend i.line { height: 2px; border-radius: 1px; vertical-align: 3px; width: 14px; }
+pre.txt { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px; overflow-x: auto; font: 12px/1.45 ui-monospace, Menlo, monospace; margin: 8px 0; }
+details > summary { cursor: pointer; color: var(--ink2); margin: 8px 0; }
+.two { display: grid; grid-template-columns: 300px 1fr; gap: 16px; }
+.list { max-height: 640px; overflow-y: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+.list .it { padding: 6px 10px; border-bottom: 1px solid var(--line); cursor: pointer; display: flex; gap: 8px; align-items: baseline; }
+.list .it:hover { background: var(--chip); }
+.list .it.on { background: color-mix(in srgb, var(--accent) 14%, var(--surface)); }
+.list .it .em { font-size: 18px; width: 28px; }
+.list .it .meta { color: var(--muted); font-size: 12px; }
+.rawtext { white-space: pre-wrap; font-size: 13px; color: var(--ink2); }
+.rawtext mark { background: color-mix(in srgb, var(--c-e) 30%, transparent); color: var(--ink); padding: 0 2px; border-radius: 3px; }
+.pager { display: flex; gap: 8px; align-items: center; margin: 8px 0; font-size: 12px; color: var(--ink2); }
+.steps { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+.step { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px; }
+.step .num { color: var(--muted); font-size: 12px; font-weight: 600; }
+.step h3 { margin: 2px 0 6px; }
+.step p { margin: 4px 0; color: var(--ink2); font-size: 13px; }
+.step a { color: var(--accent); font-size: 13px; }
+dl.gloss { display: grid; grid-template-columns: 150px 1fr; gap: 6px 14px; margin: 0; }
+dl.gloss dt { font-weight: 600; }
+dl.gloss dd { margin: 0; color: var(--ink2); }
+.gallery { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
+.gallery figure { margin: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px; }
+.gallery img { width: 100%; height: auto; border-radius: 6px; background: #fcfcfb; }
+.gallery figcaption { font-size: 12px; color: var(--ink2); margin-top: 6px; }
+svg text { fill: var(--ink2); font-size: 11px; }
+svg .axis { stroke: var(--axis); }
+svg .gridl { stroke: var(--grid); }
+#tip { position: fixed; pointer-events: none; background: var(--ink); color: var(--surface); font-size: 12px; padding: 6px 9px; border-radius: 6px; white-space: pre; z-index: 50; display: none; max-width: 420px; line-height: 1.45; }
+.muted { color: var(--muted); }
+.empty { color: var(--ink2); background: var(--surface); border: 1px dashed var(--axis); border-radius: 10px; padding: 18px; }
+code { font: 12px ui-monospace, Menlo, monospace; background: var(--chip); padding: 1px 4px; border-radius: 4px; }
+@media (max-width: 760px) { .two { grid-template-columns: 1fr; } dl.gloss { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="top">
+      <h1>C2 results viewer</h1>
+      <span class="sub" id="gen"></span>
+      <span class="spacer"></span>
+      <button id="theme" title="Switch light / dark">Theme</button>
+    </div>
+    <nav id="tabs"></nav>
+  </div>
+</header>
+<main class="wrap" id="app"></main>
+<div id="tip"></div>
+<script>window.C2_RUN = {};</script>
+<script src="data/base.js" charset="utf-8"></script>
+<script>
+"use strict";
+const D = window.C2;
+const CONDS = ["e", "w", "s", "x", "p", "r"];
+const MEASURES = [
+  ["d_es_far", "Δ_es  emoji − rare characters (far)"],
+  ["d_ew_far", "Δ_ew  emoji − English word (far)"],
+  ["d_ex_far", "Δ_ex  emoji − hex string (far)"],
+  ["d_es_near", "Δ_es  emoji − rare characters (near)"],
+  ["d_ew_near", "Δ_ew  emoji − English word (near)"],
+  ["d_ex_near", "Δ_ex  emoji − hex string (near)"],
+  ["d_er_far_per_token", "Δ_er  per token, emoji − ordinary word (far)"],
+  ["d_er_near_per_token", "Δ_er  per token, emoji − ordinary word (near)"],
+  ["d_pr_far", "Δ_pr  punctuation − ordinary word (far, positive control)"],
+  ["d_pr_near", "Δ_pr  punctuation − ordinary word (near)"],
+];
+const MLABEL = Object.fromEntries(MEASURES);
+const TABS = [["overview", "Overview"], ["audit", "1 · Audit"], ["controls", "2 · Controls"], ["probes", "3 · Probes"],
+              ["runs", "4 · Runs"], ["tests", "5 · Tests"], ["figures", "6 · Figures"]];
+
+// ---------- helpers ----------
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const sgn = (v, d = 4) => (isNaN(v) ? "–" : (v >= 0 ? "+" : "−") + Math.abs(v).toFixed(d));
+const pct = v => (100 * v).toFixed(0) + "%";
+function f32(b64) {
+  const bin = atob(b64), u8 = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+  return new Float32Array(u8.buffer);
+}
+function meanSE(vals) {
+  const v = vals.filter(x => !isNaN(x)), n = v.length;
+  if (!n) return {m: NaN, se: NaN, n: 0};
+  const m = v.reduce((a, b) => a + b, 0) / n;
+  const sd = n > 1 ? Math.sqrt(v.reduce((a, b) => a + (b - m) ** 2, 0) / (n - 1)) : 0;
+  return {m, se: n > 1 ? sd / Math.sqrt(n) : 0, n};
+}
+function niceTicks(lo, hi, count = 5) {
+  if (lo === hi) { lo -= 1; hi += 1; }
+  const step0 = (hi - lo) / count, mag = Math.pow(10, Math.floor(Math.log10(step0)));
+  const step = [1, 2, 2.5, 5, 10].map(s => s * mag).find(s => s >= step0);
+  const out = [], end = Math.ceil(hi / step - 1e-9) * step;
+  for (let t = Math.floor(lo / step + 1e-9) * step; t <= end + step * 1e-6; t += step) out.push(+t.toFixed(10));
+  return out;
+}
+function tickFmt(t) { return Math.abs(t) >= 1 || t === 0 ? String(+t.toFixed(2)) : String(+t.toPrecision(2)); }
+function pieces(str) {
+  return (str || "").split(" | ").filter(Boolean).map(p => `<span class="chip${p.includes("‹") ? " frag" : ""}">${esc(p)}</span>`).join("");
+}
+function chipList(arr) { return arr.map(p => `<span class="chip${p.includes("‹") ? " frag" : ""}">${esc(p)}</span>`).join(""); }
+function opt(v, label, cur) { return `<option value="${esc(v)}"${String(v) === String(cur) ? " selected" : ""}>${esc(label)}</option>`; }
+function uniq(a) { return [...new Set(a)]; }
+function emptyBox(msg) { return `<div class="empty">${msg}</div>`; }
+function txtBlock(title, t, open = false) {
+  return t ? `<details${open ? " open" : ""}><summary>${esc(title)}</summary><pre class="txt">${esc(t)}</pre></details>` : "";
+}
+
+// tooltip: any element with data-tip shows it (plain text, \n = new line)
+const tip = document.getElementById("tip");
+function showTip(e, text) {
+  tip.textContent = text; tip.style.display = "block";
+  const w = tip.offsetWidth, h = tip.offsetHeight;
+  let x = e.clientX + 14, y = e.clientY + 14;
+  if (x + w > innerWidth - 8) x = e.clientX - w - 14;
+  if (y + h > innerHeight - 8) y = e.clientY - h - 14;
+  tip.style.left = x + "px"; tip.style.top = y + "px";
+}
+document.addEventListener("mousemove", e => {
+  const t = e.target.closest && e.target.closest("[data-tip]");
+  if (t) showTip(e, t.getAttribute("data-tip")); else if (!e.target.closest("[data-xhair]")) tip.style.display = "none";
+});
+
+// ---------- diverging colour (blue < 0 < red, neutral midpoint) ----------
+function divStops() {
+  const dark = css("--bg").toLowerCase() === "#121211";
+  return dark ? ["#a9cdf7", "#3987e5", "#1d4a85", "#2e2d2a", "#8a2a28", "#e34948", "#f7b2ad"]
+              : ["#104281", "#3987e5", "#cde2fb", "#f0efec", "#f9d3d1", "#e34948", "#8c1d1d"];
+}
+function hex2rgb(h) { const n = parseInt(h.slice(1), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; }
+function divColor(t, stops) {        // t in [-1, 1]
+  const x = (Math.max(-1, Math.min(1, t)) + 1) / 2 * (stops.length - 1), i = Math.min(stops.length - 2, Math.floor(x)), f = x - i;
+  const a = hex2rgb(stops[i]), b = hex2rgb(stops[i + 1]);
+  return `rgb(${a.map((v, k) => Math.round(v + (b[k] - v) * f)).join(",")})`;
+}
+
+// ---------- state / routing ----------
+const S = {tab: "overview", audit: {q: "", seq: "", pool: false, page: 0}, controls: {model: null, cond: "", elig: true, q: "", page: 0},
+           probes: {model: null, split: "", carrier: "", pos: "", q: "", set: null, cond: "e", full: false},
+           runs: {name: null, measure: "d_es_far", head: null, mfield: "M_far", lfield: "far",
+                  filt: {carrier: "", pos: "", seq: "", n: ""}}};
+function setTab(t) { S.tab = t; location.hash = t; render(); }
+window.addEventListener("hashchange", () => { const t = location.hash.slice(1); if (t && t !== S.tab && TABS.some(x => x[0] === t)) { S.tab = t; render(); } });
+document.getElementById("theme").onclick = () => {
+  const r = document.documentElement, cur = r.getAttribute("data-theme");
+  const sysDark = matchMedia("(prefers-color-scheme: dark)").matches;
+  r.setAttribute("data-theme", (cur ? cur === "dark" : sysDark) ? "light" : "dark");
+  render();
+};
+
+function render() {
+  document.getElementById("tabs").innerHTML = TABS.map(([k, l]) => `<a href="#${k}" class="${k === S.tab ? "on" : ""}">${l}</a>`).join("");
+  const app = document.getElementById("app");
+  tip.style.display = "none";
+  ({overview: renderOverview, audit: renderAudit, controls: renderControls, probes: renderProbes,
+    runs: renderRuns, tests: renderTests, figures: renderFigures})[S.tab](app);
+}
+
+// =====================================================================
+// Overview
+// =====================================================================
+function renderOverview(app) {
+  const A = D.audit, P = D.probes, R = D.runs;
+  const nPy = A ? A.rows.filter(r => r.pythia410m).length : 0;
+  const passed = (D.texts.pytest || "").match(/(\d+) passed/);
+  const failed = (D.texts.pytest || "").match(/(\d+) failed/);
+  const st = (ok, t) => `<span class="status ${ok === null ? "none" : ok ? "ok" : "bad"}">${ok === null ? "○" : ok ? "✓" : "!"} ${esc(t)}</span>`;
+  const probeTags = Object.keys(P);
+  const nSets = probeTags.map(t => `${D.display[t]}: ${P[t].sets.length} sets`).join(" · ");
+  app.innerHTML = `
+  <h2>What this page is</h2>
+  <p class="lead">Everything the C2 code (tokenisation audit → controls → probes → metric → runs) has written to
+  <code>outputs/c2/</code>, in one place. It is rebuilt by <code>python scripts/c2.py report</code>, and automatically
+  after every <code>run</code> and <code>figures</code>, so whatever you test next appears here. Hover over any chart for exact values.</p>
+  <h2>The question</h2>
+  <p class="lead">Do the pieces an emoji is chopped into get <b>more attention</b> from later tokens than look-alike strings with
+  the same number of pieces that are <b>not</b> emoji? Each emoji is compared, inside an identical sentence, with an English word,
+  rare characters and a hex string that split into the same number of tokens.</p>
+  <h2>The pipeline</h2>
+  <div class="steps">
+    <div class="step"><div class="num">STEP 1</div><h3>Tokenisation audit</h3>
+      <p>Counts how many tokens every one of the Unicode emoji becomes in each model.</p>
+      <p>${A ? st(true, `${A.rows.length} emoji · pool ${A.pool_n}`) : st(null, "not run: scripts/c2.py audit")}</p><a href="#audit">Open →</a></div>
+    <div class="step"><div class="num">STEP 2</div><h3>Control fillers</h3>
+      <p>Builds look-alike strings (words, rare characters, hex, punctuation, plain words) and counts their tokens.</p>
+      <p>${D.controls ? st(true, Object.keys(D.controls.rows).map(t => D.display[t]).join(" + ")) : st(null, "not run: scripts/c2.py controls")}</p><a href="#controls">Open →</a></div>
+    <div class="step"><div class="num">STEP 3</div><h3>Matched probes</h3>
+      <p>Puts each emoji and its look-alikes into the same sentence at the same token position; rejects anything not perfectly matched.</p>
+      <p>${probeTags.length ? st(true, nSets) : st(null, "not run: scripts/c2.py probes")}</p><a href="#probes">Open →</a></div>
+    <div class="step"><div class="num">STEP 4</div><h3>Runs (the measurement)</h3>
+      <p>Feeds probes through the model and measures M, the share of later tokens' attention that lands on the slot, for every head.</p>
+      <p>${R.length ? st(true, `${R.length} run${R.length > 1 ? "s" : ""}: ` + R.map(r => `${r.model} ${r.split}`).join(", ")) : st(null, "not run: scripts/c2.py run")}</p><a href="#runs">Open →</a></div>
+    <div class="step"><div class="num">STEP 5</div><h3>Tests and hand-check</h3>
+      <p>Proves the attention is read correctly and the maths matches a hand calculation.</p>
+      <p>${passed ? st(!failed, `${passed[1]} passed${failed ? `, ${failed[1]} failed` : ""}`) : st(null, "no saved pytest output")}</p><a href="#tests">Open →</a></div>
+    <div class="step"><div class="num">STEP 6</div><h3>Figures</h3>
+      <p>Static PNGs for slides (pilot figures carry the DEVELOPMENT PILOT label).</p>
+      <p>${D.images.length ? st(true, `${D.images.length} images`) : st(null, "none yet")}</p><a href="#figures">Open →</a></div>
+  </div>
+  <h2>Words used on this page</h2>
+  <div class="card"><dl class="gloss">
+    <dt>token</dt><dd>A chunk of text the model reads. "cat" is 1 token; 👍🏽 is 6 tokens in Pythia.</dd>
+    <dt>byte fragment</dt><dd>A token that is only part of a character's bytes, shown like <span class="chip frag">‹F0 9F›</span>. Meaningless on its own.</dd>
+    <dt>slot (S)</dt><dd>The tokens of the thing being tested (emoji or control), always starting at token 24 or 96.</dd>
+    <dt>buffer</dt><dd>The 16 tokens right after the slot. Not used for M_far, so nearby "reading the next word" attention doesn't count.</dd>
+    <dt>Q (readers)</dt><dd>The 64 tokens after the buffer. M_far asks how much these look back at the slot. M_near uses the buffer instead.</dd>
+    <dt>M</dt><dd>Average, over the readers, of the attention share that lands on the slot (0 = none, 1 = all).</dd>
+    <dt>Δ (delta)</dt><dd>M for the emoji minus M for a look-alike in the same sentence. Positive = the emoji got more attention.</dd>
+    <dt>layer / head</dt><dd>Pythia-410M has 24 layers × 16 heads = 384 separate attention mechanisms; each gets its own M.</dd>
+    <dt>± SE</dt><dd>Standard error across <b>emoji</b> (not across sentences), because sentences sharing an emoji are not independent.</dd>
+    <dt>dev / confirm</dt><dd>5 dev emoji are for testing the pipeline (pilot). 48 confirm emoji are the real experiment.</dd>
+  </dl></div>`;
+}
+
+// =====================================================================
+// 1 Audit
+// =====================================================================
+function renderAudit(app) {
+  const A = D.audit;
+  if (!A) { app.innerHTML = emptyBox("No audit yet. Run <code>python scripts/c2.py audit</code>, then <code>python scripts/c2.py report</code>."); return; }
+  const tags = A.tags, tiles = [];
+  for (const t of tags) {
+    const n = A.rows.filter(r => r[t]).map(r => r[t][0]).sort((a, b) => a - b);
+    const multi = n.filter(x => x > 1).length;
+    tiles.push(`<div class="tile"><div class="k"><i style="display:inline-block;width:9px;height:9px;border-radius:2px;background:var(--m-${t})"></i> ${esc(D.display[t])}: multi-token emoji</div>
+      <div class="v">${(100 * multi / n.length).toFixed(2)}%</div><div class="n">${multi} of all ${n.length} sequences, line-start context · median ${n[Math.floor((n.length - 1) / 2)]} · max ${n[n.length - 1]} tokens</div></div>`);
+  }
+  tiles.push(`<div class="tile"><div class="k">Candidate pool</div><div class="v">${A.pool_n}</div><div class="n">${esc(A.pool_rule)}</div></div>`);
+  app.innerHTML = `
+    <h2>How emoji get chopped into tokens</h2>
+    <p class="lead">Every fully-qualified emoji in Unicode 15.1, tokenised the way it appears in a probe (at the start of a line).
+    Emoji with 2–6 tokens in <b>both</b> models form the pool the experiment samples from (shaded band).</p>
+    <div class="grid">${tiles.join("")}</div>
+    <div class="card"><h3 style="margin-top:0">Number of tokens per emoji</h3>
+      <div class="legend">${tags.map(t => `<span><i style="background:var(--m-${t})"></i>${esc(D.display[t])}</span>`).join("")}<span><i style="background:var(--chip);border:1px solid var(--axis)"></i>pool range (2–6)</span></div>
+      <div id="hist" class="scroll"></div></div>
+    <h2>Look up any emoji</h2>
+    <div class="controls">
+      <input type="search" id="aq" placeholder="Search emoji or name…" value="${esc(S.audit.q)}">
+      <label>type <select id="aseq">${opt("", "all", S.audit.seq)}${uniq(A.rows.map(r => r.seq)).map(s => opt(s, s, S.audit.seq)).join("")}</select></label>
+      <label><input type="checkbox" id="apool" ${S.audit.pool ? "checked" : ""}> pool only</label>
+      <span class="muted" id="acount"></span>
+    </div>
+    <div class="card scroll" id="atable"></div>
+    ${txtBlock("Full audit summary (text, with the comparison to the proposal's numbers)", A.summary)}`;
+  drawHistogram(document.getElementById("hist"), A);
+  const upd = () => { S.audit.page = 0; auditTable(); };
+  document.getElementById("aq").oninput = e => { S.audit.q = e.target.value; upd(); };
+  document.getElementById("aseq").onchange = e => { S.audit.seq = e.target.value; upd(); };
+  document.getElementById("apool").onchange = e => { S.audit.pool = e.target.checked; upd(); };
+  auditTable();
+}
+function drawHistogram(el, A) {
+  const tags = A.tags, maxN = Math.max(...A.rows.flatMap(r => tags.filter(t => r[t]).map(t => r[t][0])));
+  const counts = tags.map(t => { const c = new Array(maxN + 1).fill(0); A.rows.forEach(r => { if (r[t]) c[r[t][0]]++; }); return c; });
+  const W = Math.max(560, Math.min(el.clientWidth || 900, 1100)), Hh = 260, m = {l: 48, r: 10, t: 10, b: 34};
+  const iw = W - m.l - m.r, ih = Hh - m.t - m.b, ymax = Math.max(...counts.flat());
+  const ticks = niceTicks(0, ymax, 5), ytop = ticks[ticks.length - 1];
+  const bw = iw / maxN, gw = Math.max(2, (bw - 4) / tags.length);
+  const X = n => m.l + (n - 1) * bw, Y = v => m.t + ih - ih * v / ytop;
+  let s = `<svg width="${W}" height="${Hh}" viewBox="0 0 ${W} ${Hh}" role="img" aria-label="Histogram of tokens per emoji">`;
+  s += `<rect x="${X(2)}" y="${m.t}" width="${bw * 5}" height="${ih}" fill="var(--chip)"/>`;
+  ticks.forEach(t => { s += `<line class="gridl" x1="${m.l}" x2="${W - m.r}" y1="${Y(t)}" y2="${Y(t)}"/><text x="${m.l - 6}" y="${Y(t) + 4}" text-anchor="end">${t}</text>`; });
+  for (let n = 1; n <= maxN; n++) {
+    tags.forEach((t, k) => {
+      const v = counts[k][n]; if (!v) return;
+      const x = X(n) + 2 + k * gw, y = Y(v), h = m.t + ih - y;
+      s += `<path d="M${x},${m.t + ih}V${y + Math.min(3, h)}q0,-3 3,-3h${Math.max(0, gw - 7)}q3,0 3,3V${m.t + ih}Z" fill="var(--m-${t})"/>`;
+    });
+    const tipT = `${n} token${n > 1 ? "s" : ""}\n` + tags.map((t, k) => `${D.display[t]}: ${counts[k][n]} emoji`).join("\n");
+    s += `<rect x="${X(n)}" y="${m.t}" width="${bw}" height="${ih}" fill="transparent" data-tip="${esc(tipT)}"/>`;
+    if (maxN <= 30 || n % 2 === 1) s += `<text x="${X(n) + bw / 2}" y="${Hh - m.b + 16}" text-anchor="middle">${n}</text>`;
+  }
+  s += `<line class="axis" x1="${m.l}" x2="${W - m.r}" y1="${m.t + ih}" y2="${m.t + ih}"/>`;
+  s += `<text x="${m.l + iw / 2}" y="${Hh - 4}" text-anchor="middle">tokens per emoji (probe-slot context)</text>`;
+  s += `<text transform="translate(12,${m.t + ih / 2}) rotate(-90)" text-anchor="middle">number of emoji</text></svg>`;
+  el.innerHTML = s;
+}
+function auditTable() {
+  const A = D.audit, q = S.audit.q.trim().toLowerCase();
+  const rows = A.rows.filter(r => (!q || r.e.includes(q) || r.name.toLowerCase().includes(q)) && (!S.audit.seq || r.seq === S.audit.seq) && (!S.audit.pool || r.pool));
+  const per = 50, pages = Math.max(1, Math.ceil(rows.length / per));
+  S.audit.page = Math.min(S.audit.page, pages - 1);
+  const shown = rows.slice(S.audit.page * per, (S.audit.page + 1) * per);
+  document.getElementById("acount").textContent = `${rows.length} emoji`;
+  const tags = A.tags;
+  document.getElementById("atable").innerHTML = `<table><thead><tr><th>emoji</th><th>name</th><th>type</th>
+    ${tags.map(t => `<th class="num">${esc(D.display[t])} tokens</th><th>${esc(D.display[t])} pieces</th>`).join("")}<th>pool</th></tr></thead><tbody>
+    ${shown.map(r => `<tr><td style="font-size:20px">${esc(r.e)}</td><td>${esc(r.name)}</td><td class="muted">${esc(r.seq)}</td>
+      ${tags.map(t => r[t] ? `<td class="num">${r[t][0]}</td><td>${pieces(r[t][2])}</td>` : `<td></td><td></td>`).join("")}
+      <td>${r.pool ? "✓" : ""}</td></tr>`).join("")}</tbody></table>
+    <div class="pager"><button id="aprev" ${S.audit.page ? "" : "disabled"}>← prev</button>page ${S.audit.page + 1} / ${pages}<button id="anext" ${S.audit.page < pages - 1 ? "" : "disabled"}>next →</button>
+    <span>Orange chips are byte fragments (bytes of a character, not whole characters). ␣ = space.</span></div>`;
+  document.getElementById("aprev").onclick = () => { S.audit.page--; auditTable(); };
+  document.getElementById("anext").onclick = () => { S.audit.page++; auditTable(); };
+}
+
+// =====================================================================
+// 2 Controls
+// =====================================================================
+function renderControls(app) {
+  const C = D.controls;
+  if (!C) { app.innerHTML = emptyBox("No controls yet. Run <code>python scripts/c2.py controls</code>."); return; }
+  const tags = Object.keys(C.rows);
+  S.controls.model = S.controls.model && C.rows[S.controls.model] ? S.controls.model : tags[0];
+  const matrix = t => {
+    const rows = C.rows[t].filter(r => r[5]), maxN = Math.min(10, Math.max(...rows.map(r => r[2])));
+    const conds = ["w", "s", "x", "p", "r"];
+    return `<table><thead><tr><th>condition</th>${Array.from({length: maxN}, (_, i) => `<th class="num">${i + 1} tok</th>`).join("")}<th class="num">total</th></tr></thead><tbody>
+      ${conds.map(c => { const rc = rows.filter(r => r[0] === c);
+        return `<tr><td><i style="display:inline-block;width:9px;height:9px;border-radius:2px;background:var(--c-${c});margin-right:6px"></i>${esc(c)} · ${esc(D.cond_names[c])}</td>
+        ${Array.from({length: maxN}, (_, i) => { const v = rc.filter(r => r[2] === i + 1).length;
+          const inRange = i + 1 >= 2 && i + 1 <= 6 && ["w", "s", "x"].includes(c);
+          return `<td class="num" style="${inRange ? "background:var(--chip);" : ""}${inRange && !v ? "color:var(--warn-ink);font-weight:600" : ""}">${v || (inRange ? "0" : "")}</td>`; }).join("")}
+        <td class="num">${rc.length}</td></tr>`; }).join("")}</tbody></table>`;
+  };
+  app.innerHTML = `
+    <h2>Look-alike strings (controls)</h2>
+    <p class="lead">Each emoji is compared with strings that split into the <b>same number of tokens</b> but are not emoji.
+    The table counts usable candidates at each token count. Shaded cells are the counts the experiment needs (2–6 tokens);
+    a red 0 there would mean some emoji cannot be matched.</p>
+    ${tags.map(t => `<div class="card scroll"><h3 style="margin-top:0">${esc(D.display[t])}: eligible candidates by token count</h3>${matrix(t)}</div>`).join("")}
+    <h2>Browse candidates</h2>
+    <div class="controls">
+      <label>model <select id="cm">${tags.map(t => opt(t, D.display[t], S.controls.model)).join("")}</select></label>
+      <label>condition <select id="cc">${opt("", "all", S.controls.cond)}${["w", "s", "x", "p", "r"].map(c => opt(c, `${c} · ${D.cond_names[c]}`, S.controls.cond)).join("")}</select></label>
+      <label><input type="checkbox" id="ce" ${S.controls.elig ? "checked" : ""}> eligible only</label>
+      <input type="search" id="cq" placeholder="Search filler…" value="${esc(S.controls.q)}">
+      <span class="muted" id="ccount"></span>
+    </div>
+    <div class="card scroll" id="ctable"></div>
+    ${txtBlock("Controls summary (text)", C.summary)}`;
+  const upd = () => { S.controls.page = 0; controlsTable(); };
+  document.getElementById("cm").onchange = e => { S.controls.model = e.target.value; upd(); };
+  document.getElementById("cc").onchange = e => { S.controls.cond = e.target.value; upd(); };
+  document.getElementById("ce").onchange = e => { S.controls.elig = e.target.checked; upd(); };
+  document.getElementById("cq").oninput = e => { S.controls.q = e.target.value; upd(); };
+  controlsTable();
+}
+function controlsTable() {
+  const st = S.controls, q = st.q.trim().toLowerCase();
+  const rows = D.controls.rows[st.model].filter(r => (!st.cond || r[0] === st.cond) && (!st.elig || r[5]) && (!q || r[1].toLowerCase().includes(q)));
+  const per = 50, pages = Math.max(1, Math.ceil(rows.length / per));
+  st.page = Math.min(st.page, pages - 1);
+  document.getElementById("ccount").textContent = `${rows.length} candidates`;
+  document.getElementById("ctable").innerHTML = `<table><thead><tr><th>cond</th><th>filler</th><th class="num">tokens</th><th class="num">byte frags</th><th>pieces</th><th>eligible</th><th>reason if not</th></tr></thead><tbody>
+    ${rows.slice(st.page * per, (st.page + 1) * per).map(r => `<tr><td>${esc(r[0])}</td><td style="font-size:15px">${esc(r[1])}</td><td class="num">${r[2]}</td><td class="num">${r[3]}</td><td>${pieces(r[4])}</td><td>${r[5] ? "✓" : "✗"}</td><td class="muted">${esc(r[6])}</td></tr>`).join("")}
+    </tbody></table>
+    <div class="pager"><button id="cprev" ${st.page ? "" : "disabled"}>← prev</button>page ${st.page + 1} / ${pages}<button id="cnext" ${st.page < pages - 1 ? "" : "disabled"}>next →</button></div>`;
+  document.getElementById("cprev").onclick = () => { st.page--; controlsTable(); };
+  document.getElementById("cnext").onclick = () => { st.page++; controlsTable(); };
+}
+
+// =====================================================================
+// 3 Probes
+// =====================================================================
+function renderProbes(app) {
+  const tags = Object.keys(D.probes);
+  if (!tags.length) { app.innerHTML = emptyBox("No probes yet. Run <code>python scripts/c2.py probes --model pythia</code>."); return; }
+  const st = S.probes;
+  st.model = st.model && D.probes[st.model] ? st.model : tags[0];
+  const P = D.probes[st.model];
+  const carriers = uniq(P.sets.map(s => s.carrier)), poss = uniq(P.sets.map(s => s.pos));
+  const nDev = P.sets.filter(s => s.split === "dev").length, nConf = P.sets.length - nDev;
+  const nProbes = P.sets.reduce((a, s) => a + Object.keys(s.conds).length, 0);
+  app.innerHTML = `
+    <h2>Matched probe sets</h2>
+    <p class="lead">A <b>matched set</b> is one sentence written six times: once with the emoji and once with each look-alike.
+    Everything outside the slot is token-for-token identical, and the slot always starts at the same token. Pick a set to see it.</p>
+    <div class="grid">
+      <div class="tile"><div class="k">matched sets</div><div class="v">${P.sets.length}</div><div class="n">${nDev} dev · ${nConf} confirm</div></div>
+      <div class="tile"><div class="k">probes (sentences)</div><div class="v">${nProbes}</div><div class="n">6 conditions per set</div></div>
+      <div class="tile"><div class="k">excluded</div><div class="v">${P.exclusions.length}</div><div class="n">${P.exclusions.length ? "see the exclusion log below" : "every attempted set was matched"}</div></div>
+      <div class="tile"><div class="k">identical outside the slot</div><div class="v">${P.sets.every(s => s.same) ? "all sets" : P.sets.filter(s => s.same).length + " sets"}</div><div class="n">checked on token ids before and after the slot</div></div>
+    </div>
+    <div class="controls">
+      <label>model <select id="pm">${tags.map(t => opt(t, D.display[t], st.model)).join("")}</select></label>
+      <label>split <select id="ps">${opt("", "all", st.split)}${opt("dev", "dev", st.split)}${opt("confirm", "confirm", st.split)}</select></label>
+      <label>carrier <select id="pc">${opt("", "all", st.carrier)}${carriers.map(c => opt(c, c, st.carrier)).join("")}</select></label>
+      <label>position <select id="pp">${opt("", "all", st.pos)}${poss.map(c => opt(c, c, st.pos)).join("")}</select></label>
+      <input type="search" id="pq" placeholder="Search emoji or name…" value="${esc(st.q)}">
+    </div>
+    <div class="two"><div><div class="muted" id="pcount" style="font-size:12px;margin-bottom:4px"></div><div class="list" id="plist"></div></div><div id="pdetail"></div></div>
+    <h2>Exclusion log</h2>
+    ${P.exclusions.length ? `<div class="card scroll"><table><thead><tr>${Object.keys(P.exclusions[0]).map(k => `<th>${esc(k)}</th>`).join("")}</tr></thead><tbody>
+      ${P.exclusions.slice(0, 500).map(r => `<tr>${Object.values(r).map(v => `<td>${esc(v)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`
+      : `<div class="empty">No exclusions for ${esc(D.display[st.model])}: every attempted emoji × carrier × position found a matching control in every condition.</div>`}
+    ${txtBlock("Coverage report (text)", P.coverage)}
+    ${txtBlock("Anatomy printout (text)", D.texts["anatomy_" + st.model])}`;
+  const upd = () => probeList();
+  document.getElementById("pm").onchange = e => { st.model = e.target.value; st.set = null; renderProbes(app); };
+  document.getElementById("ps").onchange = e => { st.split = e.target.value; upd(); };
+  document.getElementById("pc").onchange = e => { st.carrier = e.target.value; upd(); };
+  document.getElementById("pp").onchange = e => { st.pos = e.target.value; upd(); };
+  document.getElementById("pq").oninput = e => { st.q = e.target.value; upd(); };
+  probeList();
+}
+function probeList() {
+  const st = S.probes, P = D.probes[st.model], q = st.q.trim().toLowerCase();
+  const rows = P.sets.filter(s => (!st.split || s.split === st.split) && (!st.carrier || s.carrier === st.carrier) && (!st.pos || s.pos === st.pos) && (!q || s.e.includes(q) || s.name.toLowerCase().includes(q)));
+  if (!st.set || !rows.some(s => s.id === st.set)) st.set = rows.length ? rows[0].id : null;
+  document.getElementById("pcount").textContent = `${rows.length} sets`;
+  const list = document.getElementById("plist");
+  list.innerHTML = rows.map(s => `<div class="it${s.id === st.set ? " on" : ""}" data-id="${esc(s.id)}"><span class="em">${esc(s.e)}</span>
+    <span><div>${esc(s.carrier)} · ${esc(s.pos)}</div><div class="meta">${esc(s.split)} · ${s.n} tokens · ${esc(s.seq)}</div></span></div>`).join("");
+  list.onclick = e => { const it = e.target.closest(".it"); if (!it) return; st.set = it.dataset.id; st.full = false;
+    list.querySelectorAll(".it").forEach(x => x.classList.toggle("on", x === it)); probeDetail(); };
+  probeDetail();
+}
+function probeDetail() {
+  const st = S.probes, P = D.probes[st.model], el = document.getElementById("pdetail");
+  const s = P.sets.find(x => x.id === st.set);
+  if (!s) { el.innerHTML = emptyBox("No set matches these filters."); return; }
+  if (!s.conds[st.cond]) st.cond = "e";
+  const ctx = P.contexts[s.ctx], c = s.conds[st.cond];
+  const rowsHtml = CONDS.filter(k => s.conds[k]).map(k => { const m = s.conds[k];
+    return `<tr><td><i style="display:inline-block;width:9px;height:9px;border-radius:2px;background:var(--c-${k});margin-right:6px"></i><b>${k}</b> <span class="muted">${esc(D.cond_names[k])}</span></td>
+      <td style="font-size:17px">${esc(m.f)}</td><td class="num">${m.p.length}</td><td class="num">${m.frag}</td><td>${chipList(m.p)}</td></tr>`; }).join("");
+  const preShow = st.full ? ctx.pre : ctx.pre.slice(-6);
+  const hidden = ctx.pre.length - preShow.length;
+  const slotStart = ctx.pre.length;
+  let strip = hidden ? `<button id="pfull">… show ${hidden} more prefix tokens</button> ` : "";
+  strip += preShow.map((p, i) => `<span class="chip prefix" data-tip="token ${slotStart - preShow.length + i} · prefix">${esc(p)}</span>`).join("");
+  strip += c.p.map((p, i) => `<span class="chip slot" data-tip="token ${slotStart + i} · slot (S)">${esc(p)}</span>`).join("");
+  const after = slotStart + c.p.length;
+  strip += ctx.post.map((p, i) => { const reg = i < P.buffer ? "buffer" : i < P.buffer + P.qlen ? "q" : "after";
+    return `<span class="chip ${reg}" data-tip="token ${after + i} · ${{buffer: "buffer", q: "Q (reader)", after: "after Q (ignored)"}[reg]}">${esc(p)}</span>`; }).join("");
+  el.innerHTML = `<div class="card">
+      <div style="display:flex;gap:12px;align-items:baseline;flex-wrap:wrap"><span style="font-size:30px">${esc(s.e)}</span>
+      <div><b>${esc(s.name)}</b><div class="muted" style="font-size:12px">${esc(s.id)} · ${esc(s.split)} · slot starts at token ${s.start} · ${s.n} tokens · sequence ${s.len} tokens</div></div></div>
+      <h3>The six versions (only the slot differs)</h3>
+      <div class="scroll"><table><thead><tr><th>condition</th><th>filler</th><th class="num">tokens</th><th class="num">byte frags</th><th>slot pieces</th></tr></thead><tbody>${rowsHtml}</tbody></table></div>
+      <p class="muted" style="font-size:12px">w, s and x must have exactly as many tokens as the emoji. p and r are single tokens (positive control and baseline).
+      ${s.same ? "✓ Token ids before and after the slot are identical in all versions." : "<b style='color:var(--warn-ink)'>Token ids outside the slot differ between versions.</b>"}</p>
+      <h3>Every token of one version</h3>
+      <div class="controls">${CONDS.filter(k => s.conds[k]).map(k => `<button data-c="${k}" class="${k === st.cond ? "on" : ""}">${k} · ${esc(D.cond_names[k])}</button>`).join("")}</div>
+      <div class="legend"><span><i style="background:var(--reg-prefix)"></i>prefix</span><span><i style="background:var(--reg-slot)"></i>slot S (measured)</span>
+        <span><i style="background:var(--reg-buffer)"></i>buffer (16, used by M_near)</span><span><i style="background:var(--reg-q)"></i>Q readers (64, used by M_far)</span><span><i style="background:var(--reg-after)"></i>after Q (ignored)</span></div>
+      <div class="strip" style="line-height:2">${strip}</div>
+      <h3>As plain text</h3>
+      <div class="rawtext">${esc(ctx.tpre)}<mark>${esc(c.f)}</mark>${esc(ctx.tpost)}</div></div>`;
+  el.querySelectorAll("button[data-c]").forEach(bt => bt.onclick = () => { st.cond = bt.dataset.c; probeDetail(); });
+  const pf = document.getElementById("pfull"); if (pf) pf.onclick = () => { st.full = true; probeDetail(); };
+}
+
+// =====================================================================
+// 4 Runs
+// =====================================================================
+function loadRun(name, cb) {
+  if (window.C2_RUN[name]) return cb(window.C2_RUN[name]);
+  const meta = D.runs.find(r => r.name === name), sc = document.createElement("script");
+  sc.src = meta.file; sc.charset = "utf-8";
+  sc.onload = () => cb(prepRun(window.C2_RUN[name]));
+  sc.onerror = () => { document.getElementById("rbody").innerHTML = emptyBox(`Could not load ${esc(meta.file)}. Rebuild with <code>python scripts/c2.py report</code>.`); };
+  document.head.appendChild(sc);
+}
+function prepRun(r) {
+  if (r._prep) return r;
+  for (const k in r.measures) { r.measures[k].E = f32(r.measures[k].by_emoji); r.measures[k].LS = f32(r.measures[k].layer_sets); }
+  for (const f in r.cond) for (const c in r.cond[f]) {
+    r.cond[f][c].E = f32(r.cond[f][c].by_emoji);
+    if (r.cond[f][c].layer_sets) r.cond[f][c].LS = f32(r.cond[f][c].layer_sets);
+  }
+  r._prep = true; return r;
+}
+function headStats(r, E) {          // E: [nE, L, H] -> per-head mean, SE, #emoji > 0
+  const nE = r.emoji.length, K = r.L * r.H, out = {m: new Float32Array(K), se: new Float32Array(K), pos: new Uint16Array(K), n: new Uint16Array(K)};
+  for (let k = 0; k < K; k++) {
+    const v = []; for (let e = 0; e < nE; e++) v.push(E[e * K + k]);
+    const ms = meanSE(v); out.m[k] = ms.m; out.se[k] = ms.se; out.n[k] = ms.n; out.pos[k] = v.filter(x => x > 0).length;
+  }
+  return out;
+}
+function setMask(r) {
+  const f = S.runs.filt, s = r.sets;
+  return s.emoji.map((_, i) => (!f.carrier || s.carrier[i] === f.carrier) && (!f.pos || s.pos[i] === f.pos) && (!f.seq || s.seq[i] === f.seq) && (!f.n || String(s.n[i]) === f.n));
+}
+function layerAgg(r, LS, mask) {      // per-set layer means -> per-emoji -> mean ± SE across emoji, per layer + overall
+  const L = r.L, nE = r.emoji.length, sum = Array.from({length: nE}, () => new Float64Array(L)), cnt = new Uint32Array(nE);
+  r.sets.emoji.forEach((e, i) => { if (!mask[i] || isNaN(LS[i * L])) return; cnt[e]++; for (let l = 0; l < L; l++) sum[e][l] += LS[i * L + l]; });
+  const per = [], overall = [];
+  for (let e = 0; e < nE; e++) if (cnt[e]) { const row = Array.from(sum[e], v => v / cnt[e]); per.push(row); overall.push(row.reduce((a, b) => a + b, 0) / L); }
+  const byLayer = Array.from({length: L}, (_, l) => meanSE(per.map(p => p[l])));
+  return {byLayer, overall: meanSE(overall), nE: per.length, nSets: r.sets.emoji.filter((e, i) => mask[i] && !isNaN(LS[i * L])).length};
+}
+function renderRuns(app) {
+  if (!D.runs.length) { app.innerHTML = emptyBox("No runs yet. Run <code>python scripts/c2.py run --model pythia --split dev</code>; this page updates automatically when it finishes."); return; }
+  const runs = [...D.runs].sort((a, b) => b.timestamp.localeCompare(a.timestamp));
+  if (!S.runs.name || !runs.some(r => r.name === S.runs.name)) S.runs.name = runs[0].name;
+  app.innerHTML = `<div class="controls"><label>run <select id="rsel">${runs.map(r => opt(r.name, `${r.model} · ${r.split} · ${r.n_sets} sets · ${r.timestamp.replace("T", " ")}`, S.runs.name)).join("")}</select></label></div><div id="rbody"><div class="muted">Loading run…</div></div>`;
+  document.getElementById("rsel").onchange = e => { S.runs.name = e.target.value; S.runs.head = null; S.runs.filt = {carrier: "", pos: "", seq: "", n: ""}; renderRuns(app); };
+  loadRun(S.runs.name, r => runBody(prepRun(r)));
+}
+function runBody(r) {
+  const el = document.getElementById("rbody"), man = r.manifest, v = man.validation, st = S.runs;
+  const checksOk = v.max_rowsum_error < 1e-4 && v.max_causal_leak === 0 && (v.max_abs_diff_stream_vs_capture_M ?? 0) < 1e-5 && man.model_revision_loaded === man.model_revision_pinned;
+  const isPilot = r.split !== "confirm";
+  const fo = k => uniq(r.sets[k]).sort();
+  el.innerHTML = `
+    <div class="banner">${esc(r.label)}<small>${esc(r.model)} · split <b>${esc(r.split)}</b> · n = ${r.emoji.length} emoji, ${r.n_sets} matched sets, ${r.n_probes} probes · run ${esc(r.name)}</small></div>
+    <div class="grid">
+      <div class="tile"><div class="k">extraction checks</div><div class="v">${checksOk ? "<span class='status ok'>✓ passed</span>" : "<span class='status bad'>! check</span>"}</div>
+        <div class="n">row-sum error ${v.max_rowsum_error.toExponential(1)} · future leak ${v.max_causal_leak} · stream vs full capture ${(v.max_abs_diff_stream_vs_capture_M ?? NaN).toExponential(1)} · revision ${man.model_revision_loaded === man.model_revision_pinned ? "pinned ✓" : "MISMATCH"}</div></div>
+      <div class="tile"><div class="k">runtime</div><div class="v">${(man.runtime.forward_total_s / 60).toFixed(1)} min</div><div class="n">${man.runtime.per_probe_mean_s.toFixed(2)} s per probe on ${esc(man.device)} · peak memory ${Math.round(man.peak_memory.process_peak_rss_mb)} MB</div></div>
+      <div class="tile"><div class="k">emoji in this run</div><div class="v" style="font-size:20px">${r.emoji.map(e => `<span data-tip="${esc(e.name)} (${esc(e.seq)})">${esc(e.e)}</span>`).join(" ")}</div><div class="n">${r.emoji.length} emoji × 16 carrier/position versions</div></div>
+    </div>
+    <h2>Headline contrasts</h2>
+    <p class="lead">Average Δ over all ${r.L * r.H} heads (and all layers). Positive means the emoji got more distant attention than that look-alike.
+    ± is 1 SE across the ${r.emoji.length} emoji. ${isPilot ? "<b>Pilot numbers check the pipeline; they are not findings.</b>" : ""}</p>
+    <div class="controls">
+      <label>carrier <select data-f="carrier">${opt("", "all", st.filt.carrier)}${fo("carrier").map(x => opt(x, x, st.filt.carrier)).join("")}</select></label>
+      <label>position <select data-f="pos">${opt("", "all", st.filt.pos)}${fo("pos").map(x => opt(x, x, st.filt.pos)).join("")}</select></label>
+      <label>emoji type <select data-f="seq">${opt("", "all", st.filt.seq)}${fo("seq").map(x => opt(x, x, st.filt.seq)).join("")}</select></label>
+      <label>slot tokens <select data-f="n">${opt("", "all", st.filt.n)}${fo("n").map(x => opt(x, x, st.filt.n)).join("")}</select></label>
+      <span class="muted" style="font-size:12px">Filters apply to these tiles and the per-layer chart. The heatmap always uses every set.</span>
+    </div>
+    <div class="grid" id="rtiles"></div>
+    <h2>Which heads? Δ for every layer × head</h2>
+    <div class="controls"><label>measure <select id="rmeas">${MEASURES.filter(([k]) => r.measures[k]).map(([k, l]) => opt(k, l, st.measure)).join("")}</select></label>
+      <span class="muted" style="font-size:12px">Click a cell to see that head's raw M for each condition.</span></div>
+    <div class="card"><div style="display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start"><div id="rheat" class="scroll" style="max-width:100%;min-width:0;flex:0 1 auto"></div><div id="rhead" class="scroll" style="flex:1;min-width:280px"></div></div></div>
+    <h2>Δ by layer (averaged over heads)</h2>
+    <div class="controls"><label>window <select id="rlf">${opt("far", "far (Q readers)", st.lfield)}${opt("near", "near (buffer readers)", st.lfield)}</select></label></div>
+    <div class="card"><div id="rlines" class="scroll"></div></div>
+    <h2>Strongest heads for this measure</h2>
+    <div class="card scroll" id="rtop"></div>
+    ${r.summary ? txtBlock("Pilot summary text (from scripts/c2.py figures)", r.summary) : ""}
+    <details><summary>Run manifest (versions, revisions, hashes)</summary><pre class="txt">${esc(JSON.stringify(man, null, 1))}</pre></details>`;
+  el.querySelectorAll("select[data-f]").forEach(s => s.onchange = () => { st.filt[s.dataset.f] = s.value; runTiles(r); runLines(r); });
+  document.getElementById("rmeas").onchange = e => { st.measure = e.target.value; runHeat(r); runTop(r); };
+  document.getElementById("rlf").onchange = e => { st.lfield = e.target.value; runLines(r); };
+  if (!r.measures[st.measure]) st.measure = Object.keys(r.measures)[0];
+  runTiles(r); runHeat(r); runLines(r); runTop(r);
+}
+function runTiles(r) {
+  const mask = setMask(r), K = r.L * r.H;
+  const tile = (key, title) => {
+    const M = r.measures[key]; if (!M) return "";
+    const a = layerAgg(r, M.LS, mask), hs = headStats(r, M.E);
+    const unfiltered = mask.every(Boolean);
+    const npos = Array.from(hs.m).filter(x => x > 0).length;
+    return `<div class="tile"><div class="k">${esc(title)}</div><div class="v">${sgn(a.overall.m, 5)}</div>
+      <div class="n">± ${a.overall.se.toFixed(5)} SE · ${a.nE} emoji, ${a.nSets} sets${unfiltered ? ` · ${npos}/${K} heads > 0 (${pct(npos / K)})` : ""}</div></div>`;
+  };
+  let pcT = "";
+  if (r.pc) {
+    const pc = r.pc;
+    pcT = `<div class="tile"><div class="k">positive control: does punctuation beat a plain word?</div>
+      <div class="v">${pc.passes ? "<span class='status ok'>✓ yes</span>" : "<span class='status bad'>! not established</span>"}</div>
+      <div class="n">${pc.n_pos}/${pc.n_heads} heads favour punctuation (${pct(pc.frac)}; pass needs > ${pct(pc.min_frac)}) · mean ${sgn(pc.mean, 5)}.
+      ${pc.passes ? "" : "Until this passes, the metric's sensitivity is not shown, so Δ should not be interpreted."}</div></div>`;
+  }
+  document.getElementById("rtiles").innerHTML = pcT + tile("d_es_far", "Δ_es · emoji − rare characters (main control)") + tile("d_ew_far", "Δ_ew · emoji − English word")
+    + tile("d_ex_far", "Δ_ex · emoji − hex string") + tile("d_er_far_per_token", "Δ_er · per token, emoji − ordinary word") + tile("d_pr_far", "Δ_pr · punctuation − ordinary word");
+}
+function runHeat(r) {
+  const st = S.runs, M = r.measures[st.measure], hs = headStats(r, M.E), L = r.L, H = r.H, K = L * H;
+  const abs = Array.from(hs.m).filter(x => !isNaN(x)).map(Math.abs).sort((a, b) => a - b);
+  const vmax = abs.length ? (abs[Math.min(abs.length - 1, Math.floor(0.99 * (abs.length - 1)))] || 1e-6) : 1;
+  const cw = 26, ch = 17, m = {l: 40, t: 36, r: 8, b: 56}, W = m.l + H * cw + m.r, Hh = m.t + L * ch + m.b;
+  const stops = divStops();
+  let s = `<svg width="${W}" height="${Hh}" viewBox="0 0 ${W} ${Hh}" role="img" aria-label="Heatmap of ${esc(MLABEL[st.measure])} by layer and head">`;
+  for (let h = 0; h < H; h++) s += `<text x="${m.l + h * cw + cw / 2}" y="${m.t - 7}" text-anchor="middle">${h}</text>`;
+  s += `<text x="${m.l + H * cw / 2}" y="12" text-anchor="middle" style="font-weight:600">head →</text>`;
+  for (let l = 0; l < L; l++) {
+    s += `<text x="${m.l - 6}" y="${m.t + l * ch + ch / 2 + 4}" text-anchor="end">${l}</text>`;
+    for (let h = 0; h < H; h++) {
+      const k = l * H + h, v = hs.m[k], x = m.l + h * cw, y = m.t + l * ch, out = Math.abs(v) > vmax;
+      const tipT = `layer ${l}, head ${h}\nΔ = ${sgn(v)} ± ${hs.se[k].toFixed(4)} SE\n${hs.pos[k]} of ${hs.n[k]} emoji > 0${out ? "\n(beyond colour scale)" : ""}`;
+      s += `<rect x="${x + 1}" y="${y + 1}" width="${cw - 2}" height="${ch - 2}" rx="2" fill="${isNaN(v) ? "var(--chip)" : divColor(v / vmax, stops)}" data-tip="${esc(tipT)}" data-k="${k}" style="cursor:pointer"/>`;
+      if (out) s += `<circle cx="${x + cw / 2}" cy="${y + ch / 2}" r="2.5" fill="${css("--surface")}" stroke="${css("--ink")}" stroke-width="1" pointer-events="none"/>`;
+      if (st.head === k) s += `<rect x="${x + 0.5}" y="${y + 0.5}" width="${cw - 1}" height="${ch - 1}" rx="2" fill="none" stroke="${css("--ink")}" stroke-width="2" pointer-events="none"/>`;
+    }
+  }
+  s += `<text transform="translate(11,${m.t + L * ch / 2}) rotate(-90)" text-anchor="middle" style="font-weight:600">layer ↓</text>`;
+  // colour legend
+  const lx = m.l, ly = m.t + L * ch + 16, lw = H * cw, n = 40;
+  for (let i = 0; i < n; i++) s += `<rect x="${lx + i * lw / n}" y="${ly}" width="${lw / n + 0.5}" height="9" fill="${divColor(-1 + 2 * i / (n - 1), stops)}"/>`;
+  s += `<text x="${lx}" y="${ly + 22}">${sgn(-vmax, 3)}</text><text x="${lx + lw / 2}" y="${ly + 22}" text-anchor="middle">0</text><text x="${lx + lw}" y="${ly + 22}" text-anchor="end">${sgn(vmax, 3)}</text>`;
+  s += `<text x="${lx + lw / 2}" y="${ly + 36}" text-anchor="middle">blue = emoji got less · red = more · ◦ = beyond scale (99th pct)</text></svg>`;
+  const box = document.getElementById("rheat"); box.innerHTML = s;
+  box.querySelector("svg").onclick = e => { const k = e.target.getAttribute("data-k"); if (k === null) return; st.head = +k; runHeat(r); };
+  if (st.head === null) { let best = 0; for (let k = 1; k < K; k++) if (Math.abs(hs.m[k]) > Math.abs(hs.m[best])) best = k; st.head = best; runHeat(r); return; }
+  runHead(r, hs);
+}
+function runHead(r, hs) {
+  const st = S.runs, k = st.head, L = r.L, H = r.H, K = L * H, l = Math.floor(k / H), h = k % H, nE = r.emoji.length;
+  const field = st.mfield, conds = CONDS.filter(c => r.cond[field][c]);
+  const vals = conds.map(c => r.emoji.map((_, e) => r.cond[field][c].E[e * K + k]));
+  const hh = conds.map(c => r.cond.heavy_hitter[c] ? meanSE(r.emoji.map((_, e) => r.cond.heavy_hitter[c].E[e * K + k])).m : NaN);
+  const ymax = Math.max(1e-6, ...vals.flat().filter(x => !isNaN(x)));
+  const ticks = niceTicks(0, ymax, 4), top = ticks[ticks.length - 1];
+  const W = 380, Hh = 230, m = {l: 44, r: 10, t: 12, b: 40}, iw = W - m.l - m.r, ih = Hh - m.t - m.b, bw = iw / conds.length;
+  const Y = v => m.t + ih - ih * v / top;
+  let s = `<svg width="${W}" height="${Hh}" viewBox="0 0 ${W} ${Hh}" role="img" aria-label="M by condition for layer ${l} head ${h}">`;
+  ticks.forEach(t => { s += `<line class="gridl" x1="${m.l}" x2="${W - m.r}" y1="${Y(t)}" y2="${Y(t)}"/><text x="${m.l - 6}" y="${Y(t) + 4}" text-anchor="end">${tickFmt(t)}</text>`; });
+  conds.forEach((c, i) => {
+    const cx = m.l + i * bw + bw / 2, ms = meanSE(vals[i]), col = `var(--c-${c})`;
+    if (!isNaN(ms.m)) {
+      s += `<line x1="${cx}" x2="${cx}" y1="${Y(Math.max(0, ms.m - ms.se))}" y2="${Y(ms.m + ms.se)}" stroke="${col}" stroke-width="2"/>`;
+      s += `<line x1="${cx - 14}" x2="${cx + 14}" y1="${Y(ms.m)}" y2="${Y(ms.m)}" stroke="${col}" stroke-width="3" stroke-linecap="round" data-tip="${esc(`${c} · ${D.cond_names[c]}\nmean ${field} = ${ms.m.toFixed(4)} ± ${ms.se.toFixed(4)} SE`)}"/>`;
+    }
+    vals[i].forEach((v, e) => { if (isNaN(v)) return; const jx = cx + (nE > 1 ? (e / (nE - 1) - 0.5) * 22 : 0);
+      s += `<circle cx="${jx}" cy="${Y(v)}" r="4" fill="${col}" fill-opacity="0.55" stroke="${css("--surface")}" stroke-width="1.5" data-tip="${esc(`${r.emoji[e].e} ${r.emoji[e].name}\n${c} · ${D.cond_names[c]}: ${field} = ${v.toFixed(4)}`)}"/>`; });
+    s += `<text x="${cx}" y="${Hh - m.b + 16}" text-anchor="middle" style="font-weight:600">${c}</text><text x="${cx}" y="${Hh - m.b + 30}" text-anchor="middle" style="font-size:10px">${esc(D.cond_names[c].split(" ")[0])}</text>`;
+  });
+  s += `<line class="axis" x1="${m.l}" x2="${W - m.r}" y1="${m.t + ih}" y2="${m.t + ih}"/>`;
+  s += `<text transform="translate(11,${m.t + ih / 2}) rotate(-90)" text-anchor="middle">${field} (share of attention on slot)</text></svg>`;
+  const Mk = r.measures[st.measure].E;
+  document.getElementById("rhead").innerHTML = `<h3 style="margin-top:0">Layer ${l}, head ${h}</h3>
+    <div class="muted" style="font-size:12px;margin-bottom:6px">${esc(MLABEL[st.measure])}: ${sgn(hs.m[k])} ± ${hs.se[k].toFixed(4)} SE (${hs.pos[k]} of ${hs.n[k]} emoji > 0)</div>
+    <div class="controls" style="margin:4px 0">${["M_far", "M_near"].map(f => `<button data-mf="${f}" class="${f === field ? "on" : ""}">${f === "M_far" ? "far (Q)" : "near (buffer)"}</button>`).join("")}</div>
+    ${s}
+    <div class="muted" style="font-size:12px">Dots = one emoji each (averaged over its 16 sentences); bar = mean ± 1 SE.</div>
+    <div class="scroll"><table style="margin-top:8px"><thead><tr><th>emoji</th>${conds.map(c => `<th class="num">${c}</th>`).join("")}<th class="num">Δ</th></tr></thead><tbody>
+      ${r.emoji.map((em, e) => `<tr><td data-tip="${esc(em.name)}">${esc(em.e)}</td>${conds.map((c, i) => `<td class="num">${isNaN(vals[i][e]) ? "–" : vals[i][e].toFixed(3)}</td>`).join("")}<td class="num">${sgn(Mk[e * K + k], 3)}</td></tr>`).join("")}
+      <tr><td class="muted">heavy hitter</td>${hh.map(x => `<td class="num muted" data-tip="share of sentences where a slot token is in the top 10% of keys this head's readers attend to">${isNaN(x) ? "–" : pct(x)}</td>`).join("")}<td></td></tr>
+    </tbody></table></div>`;
+  document.querySelectorAll("#rhead button[data-mf]").forEach(b => b.onclick = () => { st.mfield = b.dataset.mf; runHead(r, hs); });
+}
+function runLines(r) {
+  const st = S.runs, mask = setMask(r), L = r.L, f = st.lfield;
+  const series = [["w", `d_ew_${f}`, "Δ_ew vs English word"], ["s", `d_es_${f}`, "Δ_es vs rare characters"], ["x", `d_ex_${f}`, "Δ_ex vs hex string"]]
+    .filter(([, k]) => r.measures[k]).map(([c, k, lab]) => ({c, lab, a: layerAgg(r, r.measures[k].LS, mask)}));
+  const el = document.getElementById("rlines");
+  if (!series.length) { el.innerHTML = emptyBox("No matched-control contrasts in this run."); return; }
+  const all = series.flatMap(s => s.a.byLayer.flatMap(b => [b.m - b.se, b.m + b.se])).filter(x => !isNaN(x));
+  const lo = Math.min(0, ...all), hi = Math.max(0, ...all), ticks = niceTicks(lo, hi, 5);
+  const W = Math.max(560, Math.min(el.clientWidth || 900, 1100)), Hh = 300, m = {l: 58, r: 150, t: 12, b: 38}, iw = W - m.l - m.r, ih = Hh - m.t - m.b;
+  const t0 = ticks[0], t1 = ticks[ticks.length - 1];
+  const X = l => m.l + iw * l / (L - 1), Y = v => m.t + ih - ih * (v - t0) / (t1 - t0);
+  let s = `<svg width="${W}" height="${Hh}" viewBox="0 0 ${W} ${Hh}" role="img" aria-label="Delta by layer">`;
+  ticks.forEach(t => { s += `<line class="${t === 0 ? "axis" : "gridl"}" x1="${m.l}" x2="${m.l + iw}" y1="${Y(t)}" y2="${Y(t)}"/><text x="${m.l - 6}" y="${Y(t) + 4}" text-anchor="end">${tickFmt(t)}</text>`; });
+  for (let l = 0; l < L; l += (L > 16 ? 2 : 1)) s += `<text x="${X(l)}" y="${m.t + ih + 16}" text-anchor="middle">${l}</text>`;
+  s += `<text x="${m.l + iw / 2}" y="${Hh - 4}" text-anchor="middle">layer</text>`;
+  s += `<text transform="translate(12,${m.t + ih / 2}) rotate(-90)" text-anchor="middle">Δ M_${f} (emoji − control)</text>`;
+  const ly = series.map(({a}) => Y(a.byLayer[L - 1].m)), order = ly.map((_, i) => i).sort((i, j) => ly[i] - ly[j]);
+  for (let k = 1; k < order.length; k++) ly[order[k]] = Math.max(ly[order[k]], ly[order[k - 1]] + 15);
+  const over = ly[order[order.length - 1]] - (m.t + ih); if (over > 0) order.forEach(i => { ly[i] -= over; });
+  series.forEach(({c, lab, a}, si) => {
+    const b = a.byLayer, col = css(`--c-${c}`);
+    const up = b.map((v, l) => `${X(l)},${Y(v.m + v.se)}`), dn = b.map((v, l) => `${X(l)},${Y(v.m - v.se)}`).reverse();
+    s += `<polygon points="${up.concat(dn).join(" ")}" fill="${col}" fill-opacity="0.13"/>`;
+    s += `<polyline points="${b.map((v, l) => `${X(l)},${Y(v.m)}`).join(" ")}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round"/>`;
+    const y = ly[si];
+    s += `<text x="${X(L - 1) + 8}" y="${y + 4}" style="fill:${col};font-weight:600">${esc(lab.split(" ")[0])}</text><text x="${X(L - 1) + 50}" y="${y + 4}">${esc(lab.split(" ").slice(1).join(" "))}</text>`;
+  });
+  s += `<line id="xh" x1="0" x2="0" y1="${m.t}" y2="${m.t + ih}" stroke="${css("--ink2")}" stroke-width="1" stroke-dasharray="3 3" style="display:none"/>`;
+  s += `<rect data-xhair="1" x="${m.l}" y="${m.t}" width="${iw}" height="${ih}" fill="transparent"/></svg>`;
+  const n = series[0].a;
+  el.innerHTML = `<div class="legend">${series.map(({c, lab}) => `<span><i class="line" style="background:var(--c-${c})"></i>${esc(lab)}</span>`).join("")}<span>band = ±1 SE across ${n.nE} emoji (${n.nSets} sets)</span></div>${s}`;
+  const svg = el.querySelector("svg"), ov = svg.querySelector("[data-xhair]"), xh = svg.querySelector("#xh");
+  ov.onmousemove = e => {
+    const pt = svg.getBoundingClientRect(), x = (e.clientX - pt.left) * (W / pt.width);
+    const l = Math.max(0, Math.min(L - 1, Math.round((x - m.l) / iw * (L - 1))));
+    xh.setAttribute("x1", X(l)); xh.setAttribute("x2", X(l)); xh.style.display = "";
+    showTip(e, `layer ${l}\n` + series.map(({lab, a}) => `${lab}: ${sgn(a.byLayer[l].m, 5)} ± ${a.byLayer[l].se.toFixed(5)}`).join("\n"));
+  };
+  ov.onmouseleave = () => { xh.style.display = "none"; tip.style.display = "none"; };
+}
+function runTop(r) {
+  const st = S.runs, hs = headStats(r, r.measures[st.measure].E), K = r.L * r.H;
+  const idx = Array.from({length: K}, (_, k) => k).filter(k => !isNaN(hs.m[k])).sort((a, b) => hs.m[b] - hs.m[a]);
+  const row = k => `<tr data-k="${k}" style="cursor:pointer"><td>L${Math.floor(k / r.H)} H${k % r.H}</td><td class="num">${sgn(hs.m[k])}</td><td class="num">${hs.se[k].toFixed(4)}</td><td class="num">${hs.pos[k]} / ${hs.n[k]}</td></tr>`;
+  const head = `<thead><tr><th>head</th><th class="num">mean Δ</th><th class="num">SE</th><th class="num">emoji > 0</th></tr></thead>`;
+  document.getElementById("rtop").innerHTML = `<div class="muted" style="font-size:12px">${esc(MLABEL[st.measure])}. Click a row to inspect it above. With few emoji, a big value in one head can be chance: treat as leads, not results.</div>
+    <div style="display:flex;gap:24px;flex-wrap:wrap"><div style="flex:1;min-width:260px"><h3>most positive (emoji gets more)</h3><table>${head}<tbody>${idx.slice(0, 8).map(row).join("")}</tbody></table></div>
+    <div style="flex:1;min-width:260px"><h3>most negative (emoji gets less)</h3><table>${head}<tbody>${idx.slice(-8).reverse().map(row).join("")}</tbody></table></div></div>`;
+  document.querySelectorAll("#rtop tr[data-k]").forEach(tr => tr.onclick = () => { st.head = +tr.dataset.k; runHeat(r); document.getElementById("rheat").scrollIntoView({behavior: "smooth", block: "center"}); });
+}
+
+// =====================================================================
+// 5 Tests, 6 Figures
+// =====================================================================
+function renderTests(app) {
+  const t = D.texts, passed = (t.pytest || "").match(/(\d+) passed/), failed = (t.pytest || "").match(/(\d+) failed/);
+  const lines = (t.pytest || "").split("\n").filter(x => /PASSED|FAILED|SKIPPED|ERROR/.test(x));
+  const groups = {};
+  lines.forEach(x => { const f = x.split("::")[0]; (groups[f] = groups[f] || []).push(x); });
+  app.innerHTML = `<h2>Tests and the hand-check</h2>
+    <p class="lead">These prove the measurement is wired correctly before any number is trusted: attention rows add to 1, nothing looks
+    at future tokens, the fast streaming code gives the same M as the full attention matrix, the probe rules reject bad matches,
+    and M computed by hand on a real sentence equals the code's M. Re-save after running tests with
+    <code>pytest -v tests | tee outputs/c2/tests/pytest_output.txt</code>.</p>
+    <div class="grid"><div class="tile"><div class="k">pytest</div><div class="v">${passed ? `${passed[1]} passed` : "–"}</div><div class="n">${failed ? `${failed[1]} failed` : passed ? "0 failed" : "no saved output"}</div></div>
+    ${Object.entries(groups).map(([f, xs]) => `<div class="tile"><div class="k">${esc(f.replace("tests/", ""))}</div><div class="v" style="font-size:18px">${xs.filter(x => x.includes("PASSED")).length} / ${xs.length}</div><div class="n">passed</div></div>`).join("")}</div>
+    ${t.handcheck ? `<h2>Hand-check: M by hand = M from code</h2><pre class="txt">${esc(t.handcheck)}</pre>` : emptyBox("No hand-check saved. Run <code>python scripts/c2.py handcheck</code>.")}
+    ${txtBlock("Full pytest output", t.pytest)}`;
+}
+function renderFigures(app) {
+  if (!D.images.length) { app.innerHTML = emptyBox("No figures yet."); return; }
+  const caps = {audit_token_hist: "Tokens per emoji, both models (audit)", chopped_examples: "How example strings get chopped (orange = byte fragment)",
+    anatomy: "One matched set: only the slot differs", heatmap_d_es_far: "Δ_es per head (emoji − rare chars)", heatmap_d_ew_far: "Δ_ew per head (emoji − English word)",
+    layers_delta: "Δ by layer, ±1 SE across emoji", positive_control: "Positive control: punctuation vs ordinary word"};
+  const sec = uniq(D.images.map(i => i.section));
+  app.innerHTML = `<h2>Saved figures (PNG, for slides)</h2>
+    <p class="lead">These are the static images in <code>outputs/c2/</code>. Pilot figures are titled <b>${esc(D.pilot_label)}</b> and show n.
+    Click an image to open it full size.</p>
+    ${sec.map(s => `<h3>${esc(s)}</h3><div class="gallery">${D.images.filter(i => i.section === s).map(i => {
+      const key = Object.keys(caps).find(k => i.name.startsWith(k));
+      return `<figure><a href="${esc(i.src)}" target="_blank"><img src="${esc(i.src)}" alt="${esc(i.name)}" loading="lazy"></a><figcaption><b>${esc(key ? caps[key] : i.name)}</b><br>${esc(i.src.replace("../", "outputs/c2/"))}</figcaption></figure>`; }).join("")}</div>`).join("")}`;
+}
+
+// ---------- boot ----------
+document.getElementById("gen").textContent = D ? `built ${D.generated.replace("T", " ")} from outputs/c2/` : "";
+if (!D) document.getElementById("app").innerHTML = emptyBox("data/base.js is missing. Run <code>python scripts/c2.py report</code>.");
+else { const t = location.hash.slice(1); if (TABS.some(x => x[0] === t)) S.tab = t; render(); }
+</script>
+</body>
+</html>

@@ -7,6 +7,7 @@
     python scripts/c2.py handcheck
     python scripts/c2.py run      --model pythia --split dev
     python scripts/c2.py figures  --model pythia
+    python scripts/c2.py report                     (browsable page: outputs/c2/report/index.html)
 
 Outputs go to outputs/c2/. See src/c2/ for the implementation.
 """
@@ -40,6 +41,7 @@ def main():
     sp = sub.add_parser("figures", help="DEVELOPMENT PILOT figures from a dev run")
     sp.add_argument("--model", default="pythia")
     sp.add_argument("--run", default=None, help="run directory (default: latest dev run)")
+    sub.add_parser("report", help="rebuild the local results viewer (outputs/c2/report/index.html)")
     a = ap.parse_args()
 
     if a.cmd == "audit":
@@ -60,9 +62,23 @@ def main():
     elif a.cmd == "run":
         from c2 import runner
         runner.main(a.model, a.split, a.probes, a.device, a.limit)
+        _refresh_report()
     elif a.cmd == "figures":
         from c2 import figures
         figures.main(a.model, a.run)
+        _refresh_report()
+    elif a.cmd == "report":
+        from c2 import report
+        report.main()
+
+
+def _refresh_report():
+    """Keep the viewer current after every run/figures call; never fail the main command."""
+    try:
+        from c2 import report
+        report.main()
+    except Exception as exc:
+        print(f"[report] not rebuilt ({exc}); run `python scripts/c2.py report` to retry")
 
 
 if __name__ == "__main__":
