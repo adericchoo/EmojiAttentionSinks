@@ -1,0 +1,3 @@
+# C2 outputs are regenerable; keep them out of git.
+*
+!.gitignore
