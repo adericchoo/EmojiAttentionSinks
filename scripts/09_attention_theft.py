@@ -1,0 +1,659 @@
+"""Leg 4: does an inserted emoji STEAL attention from a nearby target token?
+
+    python scripts/09_attention_theft.py              # primary model (Pythia)
+    python scripts/09_attention_theft.py replication  # Qwen
+
+This is an attention-level measurement, not a behavioural one. Attention is
+conserved, so ANY insertion into a slot redistributes some attention. The emoji
+claim only holds if the emoji diverts MORE attention off a target than a
+token-count-matched NON-sink insertion placed in the same slot. So every inserted
+condition sits in the SAME slot and is matched on TOKEN COUNT to the emoji:
+  baseline   : no insertion            (secondary reference only)
+  emoji      : a group A emoji          (the F0 9F sink)
+  hex_match  : a hex string             (token-count matched, same slot)
+  word_match : ordinary word(s)         (token-count matched, same slot)
+The PRIMARY comparison is emoji vs hex_match / word_match (identical structure,
+only the slot content differs); baseline is context.
+
+Rung 1 measures redistribution: received attention from the fixed far block Q to a
+TARGET word just before the slot, head-aware, over the sink heads (from 06) and all
+heads, plus the slot's own received attention (conservation).
+Rung 2 measures locality: the change in received attention at probe tokens at
+increasing token-distance before the slot, emoji vs matched, as a distance profile.
+
+This is additive. It reuses, without modifying:
+  - the structured probe's neutral text and far-block selection (c2.carriers / c2.probes)
+  - received_attention, span location/validation, model loading   (eas)
+  - script 06's sink-head identification and F0 9F tagging          (06 -> 05)
+  - the emoji set (group A)                                         (config/emoji_stimuli.yaml)
+
+The token-count matching helper (hex_of_token_count / words_of_token_count) was not
+present in the repo under that name, so it is built here (see below).
+
+Following scripts 04-08, ONE model is run per invocation (primary by default,
+"replication" for Qwen); run it twice to cover both models.
+"""
+import importlib.util
+import os
+import sys
+
+from _bootstrap import load_config, select_model
+
+import numpy as np
+from c2.carriers import CONTINUATION
+from c2.probes import BUFFER, QLEN
+from eas import capture_attention, load_model
+from eas.metric_reference import received_attention
+from eas.span import SpanNotFound, locate_span_by_offsets, validate_span
+from eas.types import SpanLoc
+
+try:
+    sys.stdout.reconfigure(encoding="utf-8")
+except Exception:
+    pass
+
+
+# ---------------------------------------------------------------------------
+# Bars / knobs
+# ---------------------------------------------------------------------------
+# A head is a "sink head" when it attends more than this multiple of the ordinary
+# baseline to the emoji F0 9F fragment (reuses 06's fragment-vs-baseline rule).
+SINK_HEAD_RATIO = 3.0
+# Distance buckets (token distance from a probe to the slot) for the rung-2 profile.
+DISTANCE_BUCKETS = [(1, 2), (3, 4), (5, 8), (9, 16)]
+# Emoji-minus-matched attention changes smaller than this (in received-attention
+# units, summed over Q) are treated as noise, not a real emoji-specific effect.
+RUNG2_NOISE_BAND = 0.01
+
+# Deterministic content for the token-count-matched controls.
+HEX_PATTERN = "3a7f1c9e5b2d8a4f6c0e7b3d"
+WORD_POOL = ["cat", "dog", "book", "table", "chair", "river", "apple", "house",
+             "tree", "door", "car", "bird", "cup", "pen", "road", "box"]
+
+
+def _load_byte_structure_module():
+    """Import script 06 (name begins with a digit -> load by path). It carries
+    script 05's reduction as `frag`, the F0 9F tagging, and build_reference."""
+    here = os.path.dirname(os.path.abspath(__file__))
+    path = os.path.join(here, "06_byte_structure.py")
+    spec = importlib.util.spec_from_file_location("byte_structure", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+bs06 = _load_byte_structure_module()
+frag = bs06.frag
+
+
+# ---------------------------------------------------------------------------
+# Config
+# ---------------------------------------------------------------------------
+def load_stimuli():
+    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    path = os.path.join(root, "config", "emoji_stimuli.yaml")
+    import yaml
+    with open(path, encoding="utf-8") as handle:
+        return yaml.safe_load(handle)
+
+
+# ---------------------------------------------------------------------------
+# Carrier templates: lead-in + probe run + newline + [SLOT] + continuation.
+# The slot starts a line (newline before it), so the tokens BEFORE the slot are
+# identical whatever is inserted, and the emoji tokenises cleanly (lead F0 9F).
+# The last probe word is the TARGET, the token nearest the slot.
+# ---------------------------------------------------------------------------
+TEMPLATE_SPECS = [
+    {
+        "name": "office_note",
+        "lead_in": "Office note. The weekly items are listed below in a plain row:",
+        "probes": ["river", "copper", "silver", "garden", "window", "marble",
+                   "harbor", "lantern", "meadow", "anchor", "timber", "beacon", "target"],
+    },
+    {
+        "name": "archive_row",
+        "lead_in": "Archive row. The following plain words were copied in order from the card:",
+        "probes": ["winter", "castle", "forest", "candle", "pepper", "saddle",
+                   "velvet", "puzzle", "ladder", "basket", "signal", "pointer", "anchorword"],
+    },
+    {
+        "name": "label_strip",
+        "lead_in": "Label strip. A short run of ordinary words was written across the tape:",
+        "probes": ["mirror", "pebble", "cotton", "ribbon", "kettle", "button",
+                   "collar", "pillow", "napkin", "candlewax", "rooftop", "cellar", "endword"],
+    },
+]
+
+
+def build_template(spec):
+    """Build one template's fixed text and the char offsets of its probe words."""
+    lead_in = spec["lead_in"]
+    probe_words = spec["probes"]
+    run = ""
+    for index in range(len(probe_words)):
+        if index == 0:
+            run = probe_words[index]
+        else:
+            run = run + " " + probe_words[index]
+    before = lead_in + " " + run + "\n"
+    after = " " + CONTINUATION
+    probes = []
+    cursor = len(lead_in) + 1
+    for word in probe_words:
+        start = before.index(word, cursor)
+        end = start + len(word)
+        probes.append({"word": word, "char_start": start, "char_end": end})
+        cursor = end
+    template = {
+        "name": spec["name"],
+        "before": before,
+        "after": after,
+        "probes": probes,
+        "target": probes[-1],
+    }
+    return template
+
+
+# ---------------------------------------------------------------------------
+# Token-count matching (built here; no such helper existed in the repo)
+# ---------------------------------------------------------------------------
+def insert_token_count(tok, before, insert, after):
+    """How many tokens the inserted slot occupies in this exact carrier."""
+    text = before + insert + after
+    enc = tok(text, return_offsets_mapping=True)
+    offsets = []
+    for pair in enc["offset_mapping"]:
+        offsets.append((pair[0], pair[1]))
+    idx = locate_span_by_offsets(offsets, len(before), len(before) + len(insert))
+    return len(idx)
+
+
+def hex_of_token_count(tok, target_count, before, after, max_len=24):
+    """A hex string that occupies exactly `target_count` tokens in the slot."""
+    for length in range(1, max_len + 1):
+        candidate = HEX_PATTERN[:length]
+        if insert_token_count(tok, before, candidate, after) == target_count:
+            return candidate
+    return None
+
+
+def words_of_token_count(tok, target_count, before, after):
+    """Ordinary word(s) occupying exactly `target_count` tokens in the slot."""
+    chosen = []
+    for word in WORD_POOL:
+        trial = []
+        for existing in chosen:
+            trial.append(existing)
+        trial.append(word)
+        insert = " ".join(trial)
+        count = insert_token_count(tok, before, insert, after)
+        if count == target_count:
+            return insert
+        if count < target_count:
+            chosen = trial
+    return None
+
+
+# ---------------------------------------------------------------------------
+# Capture one (template, insertion) and locate the slot + far block
+# ---------------------------------------------------------------------------
+def _first_token_at_or_after(offsets, char_pos):
+    chosen = None
+    for index in range(len(offsets)):
+        start = offsets[index][0]
+        end = offsets[index][1]
+        if start == 0 and end == 0:
+            continue
+        if start >= char_pos:
+            chosen = index
+            break
+    if chosen is None:
+        raise SpanNotFound("no token at or after the slot position")
+    return chosen
+
+
+def far_queries(slot_end_token, n):
+    q_start = slot_end_token + BUFFER
+    q_end = q_start + QLEN
+    if q_end > n:
+        raise SpanNotFound(f"far block runs past the sequence ({q_end} > {n})")
+    queries = []
+    for q in range(q_start, q_end):
+        queries.append(q)
+    return queries
+
+
+def locate_text_span(tok, cap, char_start, char_end, expected):
+    idx = locate_span_by_offsets(cap.offsets, char_start, char_end)
+    validate_span(tok, cap.input_ids, idx, expected)
+    return SpanLoc(idx[0], idx[-1] + 1, idx)
+
+
+def capture_condition(model, tok, template, insert):
+    """Capture attention for one slot content; return (cap, slot_span_or_None,
+    slot_start_token, far_queries)."""
+    before = template["before"]
+    after = template["after"]
+    text = before + insert + after
+    cap = capture_attention(model, tok, text)
+    slot_start_char = len(before)
+    slot_end_char = len(before) + len(insert)
+    if len(insert) > 0:
+        slot_span = locate_text_span(tok, cap, slot_start_char, slot_end_char, insert)
+        slot_start_token = slot_span.start
+        slot_end_token = slot_span.end
+    else:
+        slot_span = None
+        slot_start_token = _first_token_at_or_after(cap.offsets, slot_start_char)
+        slot_end_token = slot_start_token
+    queries = far_queries(slot_end_token, cap.n)
+    return cap, slot_span, slot_start_token, queries
+
+
+# ---------------------------------------------------------------------------
+# Received attention and head-aware reductions (explicit loops)
+# ---------------------------------------------------------------------------
+def received_lh(cap, span, queries):
+    received = received_attention(cap, span, queries)
+    return received.detach().numpy()
+
+
+def mean_all(matrix_lh):
+    total = 0.0
+    count = 0
+    for layer in range(matrix_lh.shape[0]):
+        for head in range(matrix_lh.shape[1]):
+            total = total + float(matrix_lh[layer, head])
+            count = count + 1
+    if count == 0:
+        return float("nan")
+    return total / count
+
+
+def mean_over_mask(matrix_lh, mask):
+    total = 0.0
+    count = 0
+    for layer in range(matrix_lh.shape[0]):
+        for head in range(matrix_lh.shape[1]):
+            if not mask[layer, head]:
+                continue
+            total = total + float(matrix_lh[layer, head])
+            count = count + 1
+    if count == 0:
+        return float("nan")
+    return total / count
+
+
+def sink_head_mask(emoji_received, baseline_received, ratio):
+    n_layers = emoji_received.shape[0]
+    n_heads = emoji_received.shape[1]
+    mask = np.zeros((n_layers, n_heads), dtype=bool)
+    for layer in range(n_layers):
+        for head in range(n_heads):
+            got = float(emoji_received[layer, head])
+            base = float(baseline_received[layer, head])
+            if got <= 0.0:
+                continue
+            if base <= 0.0:
+                mask[layer, head] = True
+            elif got > ratio * base:
+                mask[layer, head] = True
+    return mask
+
+
+# ---------------------------------------------------------------------------
+# Sink-head set for this model (from 06: emoji F0 9F vs ordinary baseline)
+# ---------------------------------------------------------------------------
+def compute_sink_mask(model, tok, stimuli):
+    contexts = frag.mmc.build_contexts(tok)
+    reference = bs06.build_reference(model, tok, contexts, stimuli["groups"]["R_reference"])
+    baseline_received = reference["baseline_lh"]
+    received_list = []
+    for item in stimuli["groups"]["A_smp_pictographs"]["items"]:
+        emoji = item["emoji"]
+        try:
+            cap, span, queries = bs06.locate_single(model, tok, contexts, emoji)
+        except SpanNotFound as error:
+            print(f"  [skip sink-head] {emoji!r}: {error}")
+            continue
+        lead = span.token_indices[0]
+        received = frag.fragment_received(cap.attentions, lead, queries).detach().numpy()
+        received_list.append(received)
+    if len(received_list) == 0:
+        raise SpanNotFound("could not establish the sink-head set")
+    stacked = np.stack(received_list, axis=0)
+    emoji_received = stacked.mean(axis=0)
+    return sink_head_mask(emoji_received, baseline_received, SINK_HEAD_RATIO)
+
+
+# ---------------------------------------------------------------------------
+# Small helpers
+# ---------------------------------------------------------------------------
+def _mean(values):
+    kept = []
+    for value in values:
+        if value == value:  # drop NaN
+            kept.append(value)
+    if len(kept) == 0:
+        return float("nan")
+    total = 0.0
+    for value in kept:
+        total = total + value
+    return total / len(kept)
+
+
+def distance_bucket(distance):
+    for low, high in DISTANCE_BUCKETS:
+        if low <= distance <= high:
+            return (low, high)
+    return None
+
+
+# ---------------------------------------------------------------------------
+# Rung 1: redistribution with the matched control
+# ---------------------------------------------------------------------------
+def measure_target(model, tok, template, insert, sink_mask):
+    """Attention to the TARGET token and to the slot, for one slot content.
+
+    Returns a dict with target attention over sink heads and all heads, and slot
+    attention over sink heads and all heads (slot is None for the empty baseline).
+    """
+    cap, slot_span, slot_start_token, queries = capture_condition(model, tok, template, insert)
+    target = template["target"]
+    target_span = locate_text_span(tok, cap, target["char_start"], target["char_end"], target["word"])
+    target_received = received_lh(cap, target_span, queries)
+    result = {
+        "target_sink": mean_over_mask(target_received, sink_mask),
+        "target_all": mean_all(target_received),
+        "slot_sink": float("nan"),
+        "slot_all": float("nan"),
+        "cap": cap,
+        "slot_start_token": slot_start_token,
+        "queries": queries,
+    }
+    if slot_span is not None:
+        slot_received = received_lh(cap, slot_span, queries)
+        result["slot_sink"] = mean_over_mask(slot_received, sink_mask)
+        result["slot_all"] = mean_all(slot_received)
+    return result
+
+
+def probe_changes(model_result_cap, template, sink_mask, slot_start_token, queries, tok):
+    """Received attention at every probe token, keyed by token-distance to the slot.
+
+    Returns a list of {distance, attn_sink, attn_all}. Uses the condition's own
+    capture and far block, so it is comparable across conditions sharing a slot.
+    """
+    cap = model_result_cap
+    records = []
+    for probe in template["probes"]:
+        try:
+            probe_span = locate_text_span(tok, cap, probe["char_start"], probe["char_end"], probe["word"])
+        except SpanNotFound:
+            continue
+        distance = slot_start_token - probe_span.start
+        if distance < 1:
+            continue
+        probe_received = received_lh(cap, probe_span, queries)
+        records.append({
+            "distance": distance,
+            "attn_sink": mean_over_mask(probe_received, sink_mask),
+            "attn_all": mean_all(probe_received),
+        })
+    return records
+
+
+# ---------------------------------------------------------------------------
+# Driver
+# ---------------------------------------------------------------------------
+def run_for_model(name, revision, stimuli):
+    model, tok = load_model(name, revision=revision)
+
+    print(f"\nATTENTION THEFT  —  {name}")
+    print("structured slot, fixed far block Q; every inserted condition token-count matched to the emoji")
+    print("primary comparison is emoji vs hex_match / word_match (same slot, same structure)\n")
+
+    sink_mask = compute_sink_mask(model, tok, stimuli)
+    sink_head_count = 0
+    for layer in range(sink_mask.shape[0]):
+        for head in range(sink_mask.shape[1]):
+            if sink_mask[layer, head]:
+                sink_head_count = sink_head_count + 1
+    n_cells = sink_mask.shape[0] * sink_mask.shape[1]
+    print(f"  sink-head set (from 06): {sink_head_count} of {n_cells} (layer, head) cells\n")
+
+    templates = []
+    for spec in TEMPLATE_SPECS:
+        templates.append(build_template(spec))
+    emoji_items = stimuli["groups"]["A_smp_pictographs"]["items"]
+
+    # Accumulators per condition for rung 1.
+    acc = {}
+    for condition in ("baseline", "emoji", "hex_match", "word_match"):
+        acc[condition] = {"target_sink": [], "target_all": [], "slot_sink": [], "slot_all": []}
+
+    # Rung-2 accumulators: per distance bucket, change(emoji) and change(word_match)
+    # relative to baseline, on sink heads and all heads.
+    rung2 = {}
+    for bucket in DISTANCE_BUCKETS:
+        rung2[bucket] = {"emoji_sink": [], "match_sink": [], "emoji_all": [], "match_all": []}
+
+    for template in templates:
+        # Baseline (no insertion) once per template.
+        baseline_result = measure_target(model, tok, template, "", sink_mask)
+        _accumulate(acc["baseline"], baseline_result)
+        baseline_probe = probe_changes(
+            baseline_result["cap"], template, sink_mask,
+            baseline_result["slot_start_token"], baseline_result["queries"], tok,
+        )
+        baseline_by_distance = _index_by_distance(baseline_probe)
+
+        # Token-count-matched controls, cached per token count within this template.
+        matched_cache = {}
+
+        for item in emoji_items:
+            emoji = item["emoji"]
+            try:
+                emoji_result = measure_target(model, tok, template, emoji, sink_mask)
+            except SpanNotFound as error:
+                print(f"  [skip] {emoji!r} in {template['name']}: {error}")
+                continue
+            _accumulate(acc["emoji"], emoji_result)
+
+            emoji_slot_tokens = 0
+            if emoji_result["slot_all"] == emoji_result["slot_all"]:
+                emoji_slot_tokens = insert_token_count(tok, template["before"], emoji, template["after"])
+
+            if emoji_slot_tokens not in matched_cache:
+                matched_cache[emoji_slot_tokens] = _build_matched(
+                    model, tok, template, emoji_slot_tokens, sink_mask
+                )
+            matched = matched_cache[emoji_slot_tokens]
+            if matched["hex"] is not None:
+                _accumulate(acc["hex_match"], matched["hex"])
+            if matched["word"] is not None:
+                _accumulate(acc["word_match"], matched["word"])
+
+            # Rung 2: emoji vs word_match change relative to baseline, by distance.
+            if matched["word"] is not None:
+                emoji_probe = probe_changes(
+                    emoji_result["cap"], template, sink_mask,
+                    emoji_result["slot_start_token"], emoji_result["queries"], tok,
+                )
+                word_probe = matched["word_probe"]
+                _accumulate_rung2(rung2, emoji_probe, word_probe, baseline_by_distance)
+
+    _print_rung1(name, acc)
+    _print_rung2(name, rung2)
+    print()
+
+
+def _build_matched(model, tok, template, token_count, sink_mask):
+    """Build and measure the hex and word controls matched to `token_count`."""
+    result = {"hex": None, "word": None, "word_probe": None}
+    if token_count <= 0:
+        return result
+    hex_insert = hex_of_token_count(tok, token_count, template["before"], template["after"])
+    if hex_insert is not None:
+        try:
+            result["hex"] = measure_target(model, tok, template, hex_insert, sink_mask)
+        except SpanNotFound:
+            result["hex"] = None
+    word_insert = words_of_token_count(tok, token_count, template["before"], template["after"])
+    if word_insert is not None:
+        try:
+            word_result = measure_target(model, tok, template, word_insert, sink_mask)
+            result["word"] = word_result
+            result["word_probe"] = probe_changes(
+                word_result["cap"], template, sink_mask,
+                word_result["slot_start_token"], word_result["queries"], tok,
+            )
+        except SpanNotFound:
+            result["word"] = None
+    return result
+
+
+def _accumulate(store, result):
+    store["target_sink"].append(result["target_sink"])
+    store["target_all"].append(result["target_all"])
+    store["slot_sink"].append(result["slot_sink"])
+    store["slot_all"].append(result["slot_all"])
+
+
+def _index_by_distance(probe_records):
+    by_distance = {}
+    for record in probe_records:
+        by_distance[record["distance"]] = record
+    return by_distance
+
+
+def _accumulate_rung2(rung2, emoji_probe, word_probe, baseline_by_distance):
+    word_by_distance = _index_by_distance(word_probe)
+    for record in emoji_probe:
+        distance = record["distance"]
+        bucket = distance_bucket(distance)
+        if bucket is None:
+            continue
+        if distance not in baseline_by_distance or distance not in word_by_distance:
+            continue
+        base = baseline_by_distance[distance]
+        word_record = word_by_distance[distance]
+        emoji_change_sink = record["attn_sink"] - base["attn_sink"]
+        emoji_change_all = record["attn_all"] - base["attn_all"]
+        word_change_sink = word_record["attn_sink"] - base["attn_sink"]
+        word_change_all = word_record["attn_all"] - base["attn_all"]
+        rung2[bucket]["emoji_sink"].append(emoji_change_sink)
+        rung2[bucket]["match_sink"].append(word_change_sink)
+        rung2[bucket]["emoji_all"].append(emoji_change_all)
+        rung2[bucket]["match_all"].append(word_change_all)
+
+
+# ---------------------------------------------------------------------------
+# Reporting
+# ---------------------------------------------------------------------------
+def _print_rung1(model_name, acc):
+    print("  RUNG 1 — redistribution (received attention from Q to the TARGET token)")
+    header = (f"    {'condition':12} {'target(sink)':>13} {'target(all)':>13} "
+              f"{'slot(sink)':>12} {'slot(all)':>11}")
+    print(header)
+    print("    " + "-" * (len(header) - 4))
+    means = {}
+    for condition in ("baseline", "emoji", "hex_match", "word_match"):
+        store = acc[condition]
+        means[condition] = {
+            "target_sink": _mean(store["target_sink"]),
+            "target_all": _mean(store["target_all"]),
+            "slot_sink": _mean(store["slot_sink"]),
+            "slot_all": _mean(store["slot_all"]),
+        }
+        row = means[condition]
+        print(f"    {condition:12} {row['target_sink']:>13.6f} {row['target_all']:>13.6f} "
+              f"{row['slot_sink']:>12.6f} {row['slot_all']:>11.6f}")
+
+    emoji = means["emoji"]
+    word = means["word_match"]
+    hexm = means["hex_match"]
+    theft_word_sink = word["target_sink"] - emoji["target_sink"]
+    theft_word_all = word["target_all"] - emoji["target_all"]
+    theft_hex_sink = hexm["target_sink"] - emoji["target_sink"]
+    theft_hex_all = hexm["target_all"] - emoji["target_all"]
+    print()
+    print("    theft = attn_target(matched) - attn_target(emoji)  (positive => emoji steals more)")
+    print(f"      vs word_match : sink heads {theft_word_sink:+.6f} | all heads {theft_word_all:+.6f}")
+    print(f"      vs hex_match  : sink heads {theft_hex_sink:+.6f} | all heads {theft_hex_all:+.6f}")
+
+    steals = theft_word_sink > 0.0 and theft_hex_sink > 0.0
+    print(f"\n    READ [{model_name}] rung 1: does the emoji reduce TARGET attention MORE than a "
+          f"token-count-matched non-sink insertion?")
+    if steals:
+        print(f"      YES — the emoji takes more off the target than both matched controls "
+              f"(sink-head theft {theft_word_sink:+.6f} vs word, {theft_hex_sink:+.6f} vs hex).")
+    else:
+        print(f"      NO emoji-specific theft — the emoji is within the matched controls "
+              f"(sink-head theft {theft_word_sink:+.6f} vs word, {theft_hex_sink:+.6f} vs hex). "
+              f"Any redistribution is explained by insertion length, not emoji-ness.")
+
+
+def _print_rung2(model_name, rung2):
+    print("\n  RUNG 2 — locality (change in TARGET-neighbourhood attention vs baseline, by distance)")
+    header = (f"    {'distance':10} {'emoji dChg(sink)':>17} {'word dChg(sink)':>16} "
+              f"{'emoji-word(sink)':>17} {'n':>4}")
+    print(header)
+    print("    " + "-" * (len(header) - 4))
+    ordered = []
+    max_magnitude = 0.0
+    for bucket in DISTANCE_BUCKETS:
+        store = rung2[bucket]
+        emoji_sink = _mean(store["emoji_sink"])
+        word_sink = _mean(store["match_sink"])
+        count = len(store["emoji_sink"])
+        if count == 0:
+            continue
+        difference = emoji_sink - word_sink
+        if abs(difference) > max_magnitude:
+            max_magnitude = abs(difference)
+        ordered.append(difference)
+        label = f"{bucket[0]}-{bucket[1]}"
+        print(f"    {label:10} {emoji_sink:>17.6f} {word_sink:>16.6f} {difference:>17.6f} {count:>4}")
+
+    print(f"\n    READ [{model_name}] rung 2: is the emoji-specific loss LOCAL (decays with distance) "
+          f"or FLAT (global)?")
+    if len(ordered) < 2:
+        print("      (insufficient probe coverage to judge locality)")
+        return
+
+    near = ordered[0]
+    far = ordered[-1]
+    all_negative = True
+    for value in ordered:
+        if value >= 0.0:
+            all_negative = False
+    decays = True
+    for index in range(len(ordered) - 1):
+        if abs(ordered[index]) < abs(ordered[index + 1]):
+            decays = False
+    local = all_negative and decays and abs(near) > abs(far)
+
+    if local:
+        strength = "weak but consistent" if max_magnitude < RUNG2_NOISE_BAND else "clear"
+        print(f"      LOCAL ({strength}) — the emoji-specific loss is negative at every distance and "
+              f"decays monotonically from the slot (near {near:+.6f} -> far {far:+.6f}, "
+              f"max {max_magnitude:.6f}). Targeted theft, strongest next to the slot.")
+    elif max_magnitude < RUNG2_NOISE_BAND:
+        print(f"      NO emoji-specific loss at any distance — every emoji-minus-word change is within "
+              f"noise (|.| < {RUNG2_NOISE_BAND}); max {max_magnitude:.6f}. No targeted theft "
+              f"(consistent with rung 1).")
+    else:
+        print(f"      FLAT / not clearly local — emoji-minus-word change is {near:+.6f} near vs "
+              f"{far:+.6f} far (max magnitude {max_magnitude:.6f}); no monotonic distance decay.")
+
+
+def main():
+    cfg = load_config()
+    name, revision = select_model(cfg)
+    stimuli = load_stimuli()
+    run_for_model(name, revision, stimuli)
+
+
+if __name__ == "__main__":
+    main()

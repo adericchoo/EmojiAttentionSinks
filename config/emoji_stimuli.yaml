@@ -1,0 +1,85 @@
+# config/emoji_stimuli.yaml
+# Leg 3: byte-structure / sink-localisation characterisation.
+# Hypothesis: the attention sink lives in the LEADING byte-fragment and tracks a
+# specific lead byte-token, not "emoji" in general.
+# Analysis bins results by lead_byte_token, NOT by semantic category.
+
+meta:
+  reduction: per_fragment_head_aware   # hottest fragment, head-aware; never the span-mean
+  carrier: structured_probe            # same fixed 64-token far block as the main experiment
+  per_group_min: 8
+  bin_by: lead_byte_token
+  note: >
+    Multi-codepoint entries (group C) make long, awkward spans; some may fail
+    decode-validation. Warn and skip on SpanNotFound, do not force them.
+
+groups:
+
+  A_smp_pictographs:
+    tests: "Does the sink hold across many different TRAILING bytes, lead F0 9F held constant?"
+    lead_byte_token: "F0 9F"
+    predicted_sinks: 1
+    predicted_sink_position: 0          # the leading fragment
+    items:
+      - {emoji: "😀", name: grinning face,   codepoints: [U+1F600]}
+      - {emoji: "😤", name: huffing face,     codepoints: [U+1F624]}
+      - {emoji: "🐙", name: octopus,          codepoints: [U+1F419]}
+      - {emoji: "🍕", name: pizza,            codepoints: [U+1F355]}
+      - {emoji: "🚀", name: rocket,           codepoints: [U+1F680]}
+      - {emoji: "🧠", name: brain,            codepoints: [U+1F9E0]}
+      - {emoji: "🤖", name: robot,            codepoints: [U+1F916]}
+      - {emoji: "🦾", name: mechanical arm,   codepoints: [U+1F9BE]}
+      - {emoji: "🪐", name: ringed planet,    codepoints: [U+1FA90]}
+      - {emoji: "🩷", name: pink heart,       codepoints: [U+1FA77]}
+
+  B_bmp_e2_symbols:
+    tests: "If the sink is F0 9F-specific, E2-lead symbols should NOT sink on an F0 9F token."
+    lead_byte_token: "E2"
+    predicted_sinks: 0                  # or a sink on an E2 token, not F0 9F
+    items:
+      - {emoji: "☀", name: sun,          codepoints: [U+2600]}
+      - {emoji: "☁", name: cloud,        codepoints: [U+2601]}
+      - {emoji: "⚡", name: high voltage, codepoints: [U+26A1]}
+      - {emoji: "✂", name: scissors,     codepoints: [U+2702]}
+      - {emoji: "✈", name: airplane,     codepoints: [U+2708]}
+      - {emoji: "✨", name: sparkles,     codepoints: [U+2728]}
+      - {emoji: "❄", name: snowflake,    codepoints: [U+2744]}
+      - {emoji: "★", name: black star,   codepoints: [U+2605]}
+      - {emoji: "☎", name: telephone,    codepoints: [U+260E]}
+      - {emoji: "⭐", name: white star,   codepoints: [U+2B50]}
+
+  C_multi_f0_9f:
+    tests: "Sequences with several F0 9F lead tokens should show MULTIPLE sinks, one per lead, none on the E2 joiner."
+    lead_byte_token: "F0 9F (repeated)"
+    predicted_sinks: "= f0_9f_count"    # the strongest, most falsifiable prediction
+    items:
+      - {emoji: "👍🏽", name: thumbs up + skin tone,  codepoints: [U+1F44D, U+1F3FD],               f0_9f_count: 2}
+      - {emoji: "👋🏼", name: wave + skin tone,       codepoints: [U+1F44B, U+1F3FC],               f0_9f_count: 2}
+      - {emoji: "🇸🇬", name: flag Singapore,          codepoints: [U+1F1F8, U+1F1EC],               f0_9f_count: 2}
+      - {emoji: "🇺🇸", name: flag United States,      codepoints: [U+1F1FA, U+1F1F8],               f0_9f_count: 2}
+      - {emoji: "🧑‍💻", name: technologist,           codepoints: [U+1F9D1, U+200D, U+1F4BB],        f0_9f_count: 2}
+      - {emoji: "🏳️‍🌈", name: rainbow flag,           codepoints: [U+1F3F3, U+FE0F, U+200D, U+1F308], f0_9f_count: 2}
+      - {emoji: "👨‍👩‍👧", name: family (3 person),     codepoints: [U+1F468, U+200D, U+1F469, U+200D, U+1F467], f0_9f_count: 3}
+      - {emoji: "👩🏽‍💻", name: woman technologist,    codepoints: [U+1F469, U+1F3FD, U+200D, U+1F4BB], f0_9f_count: 3}
+
+  D_nonemoji_e2:
+    tests: "Is it emoji-ness, or just the byte token? If text-like E2 symbols sink the same way, it's byte structure, not 'emoji'."
+    lead_byte_token: "E2"
+    predicted_sinks: "same as group B"
+    items:
+      - {emoji: "™", name: trademark,        codepoints: [U+2122]}
+      - {emoji: "№", name: numero,           codepoints: [U+2116]}
+      - {emoji: "℃", name: degrees celsius,  codepoints: [U+2103]}
+      - {emoji: "‰", name: per mille,        codepoints: [U+2030]}
+      - {emoji: "←", name: left arrow,       codepoints: [U+2190]}
+      - {emoji: "→", name: right arrow,      codepoints: [U+2192]}
+      - {emoji: "↔", name: left-right arrow, codepoints: [U+2194]}
+      - {emoji: "✓", name: check mark,       codepoints: [U+2713]}
+
+  R_reference:
+    tests: "Baselines for the leading-fragment comparison (length-matched frame)."
+    note: "Reuse the main experiment's hex / rare-char / ordinary-word fillers where possible."
+    items:
+      - {text: "rocket", kind: ordinary_word}      # also 🚀's gloss — ties back to leg 2
+      - {text: "table",  kind: ordinary_word}
+      - {text: "e2b1c4f0", kind: hex_fragment}     # non-Unicode byte-fragment control
