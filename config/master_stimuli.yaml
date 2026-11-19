@@ -1,0 +1,7557 @@
+pre_registration:
+  version_id: master-stimuli-v1.0
+  status: pre_registered_frozen_reviewed
+  build_timestamp_utc: '2026-11-19T18:07:35+00:00'
+  content_sha256: 866ea758fbecf0467aae0c29f5b8929c220afba52fb3a88afd2471735a76dfe5
+  unicode_data: Emoji 15.1 fully-qualified entries from data/unicode/emoji-test-15.1.txt
+  verification_model: EleutherAI/pythia-410m
+  verification_revision: 9879c9b5f8bea9051dcb0e68dff21493d67e9d4f
+  selection_rules:
+  - A has 12 single-codepoint entries in each of the five declared supplementary-plane ranges, in fixed
+    candidate order.
+  - B screens fixed BMP-symbol candidates in three codepoint ranges; keep E2-leading entries with at least
+    two actual Pythia tokens, taking the declared quota per range.
+  - C has eight skin-tone sequences, six ZWJ/family sequences, and six regional-indicator flags; expected
+    F0 9F count follows supplementary-plane codepoints.
+  - D screens the fixed E2 symbol candidate pool and keeps the first 15 single-token, round-trip entries.
+  - A expected token counts are three; B uses the UTF-8 byte-split expectation with FE0F expected as two
+    tokens; C uses three tokens per scalar except ZWJ and FE0F, which are expected as two; D expects one
+    whole token.
+  - Each A stimulus receives deterministic hex and rare-character controls matched to its token count
+    across all three fragment-matched carrier templates.
+  - The 15 glosses are a fixed subset of A and use one-word meanings.
+  - Any decode round-trip failure or unlocatable span is dropped; expected/actual lead or fragment-count
+    differences are retained and flagged.
+meta:
+  reduction: per_fragment_head_aware
+  carrier: structured_probe
+  per_group_min: 8
+  bin_by: lead_byte_token
+  note: Master stimuli are tokenizer-audited; inspect the pre-registration summary and status before final
+    runs.
+groups:
+  A_smp_pictographs:
+    stratum: A_smp_pictographs
+    tests: Does the leading F0 9F token attract attention across varied trailing bytes?
+    lead_byte_token: F0 9F
+    predicted_sinks: 1
+    predicted_sink_position: 0
+    items:
+    - char: 🌀
+      emoji: 🌀
+      name: cyclone
+      codepoints:
+      - U+1F300
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: Į
+        bytes: 8C
+        lead_byte: other
+      - token: Ģ
+        bytes: '80'
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F300-U+1F5FF
+      control_id: A-001
+    - char: 🌈
+      emoji: 🌈
+      name: rainbow
+      codepoints:
+      - U+1F308
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: Į
+        bytes: 8C
+        lead_byte: other
+      - token: Ī
+        bytes: '88'
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F300-U+1F5FF
+      control_id: A-002
+    - char: 🌊
+      emoji: 🌊
+      name: water wave
+      codepoints:
+      - U+1F30A
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: Į
+        bytes: 8C
+        lead_byte: other
+      - token: Ĭ
+        bytes: 8A
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F300-U+1F5FF
+      gloss: wave
+      control_id: A-003
+    - char: 🌋
+      emoji: 🌋
+      name: volcano
+      codepoints:
+      - U+1F30B
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: Į
+        bytes: 8C
+        lead_byte: other
+      - token: ĭ
+        bytes: 8B
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F300-U+1F5FF
+      control_id: A-004
+    - char: 🌍
+      emoji: 🌍
+      name: globe showing Europe-Africa
+      codepoints:
+      - U+1F30D
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: Į
+        bytes: 8C
+        lead_byte: other
+      - token: į
+        bytes: 8D
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F300-U+1F5FF
+      control_id: A-005
+    - char: 🌎
+      emoji: 🌎
+      name: globe showing Americas
+      codepoints:
+      - U+1F30E
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: Į
+        bytes: 8C
+        lead_byte: other
+      - token: İ
+        bytes: 8E
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F300-U+1F5FF
+      control_id: A-006
+    - char: 🌙
+      emoji: 🌙
+      name: crescent moon
+      codepoints:
+      - U+1F319
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: Į
+        bytes: 8C
+        lead_byte: other
+      - token: Ļ
+        bytes: '99'
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F300-U+1F5FF
+      gloss: moon
+      control_id: A-007
+    - char: 🌟
+      emoji: 🌟
+      name: glowing star
+      codepoints:
+      - U+1F31F
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: Į
+        bytes: 8C
+        lead_byte: other
+      - token: Ł
+        bytes: 9F
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F300-U+1F5FF
+      gloss: star
+      control_id: A-008
+    - char: 🌠
+      emoji: 🌠
+      name: shooting star
+      codepoints:
+      - U+1F320
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: Į
+        bytes: 8C
+        lead_byte: other
+      - token: ł
+        bytes: A0
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F300-U+1F5FF
+      control_id: A-009
+    - char: 🍎
+      emoji: 🍎
+      name: red apple
+      codepoints:
+      - U+1F34E
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: į
+        bytes: 8D
+        lead_byte: other
+      - token: İ
+        bytes: 8E
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F300-U+1F5FF
+      gloss: apple
+      control_id: A-010
+    - char: 🍕
+      emoji: 🍕
+      name: pizza
+      codepoints:
+      - U+1F355
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: į
+        bytes: 8D
+        lead_byte: other
+      - token: ķ
+        bytes: '95'
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F300-U+1F5FF
+      gloss: pizza
+      control_id: A-011
+    - char: 🎉
+      emoji: 🎉
+      name: party popper
+      codepoints:
+      - U+1F389
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: İ
+        bytes: 8E
+        lead_byte: other
+      - token: ī
+        bytes: '89'
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F300-U+1F5FF
+      gloss: party
+      control_id: A-012
+    - char: 😀
+      emoji: 😀
+      name: grinning face
+      codepoints:
+      - U+1F600
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ĺ
+        bytes: '98'
+        lead_byte: other
+      - token: Ģ
+        bytes: '80'
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F600-U+1F64F
+      gloss: grin
+      control_id: A-013
+    - char: 😃
+      emoji: 😃
+      name: grinning face with big eyes
+      codepoints:
+      - U+1F603
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ĺ
+        bytes: '98'
+        lead_byte: other
+      - token: ĥ
+        bytes: '83'
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F600-U+1F64F
+      control_id: A-014
+    - char: 😄
+      emoji: 😄
+      name: grinning face with smiling eyes
+      codepoints:
+      - U+1F604
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ĺ
+        bytes: '98'
+        lead_byte: other
+      - token: Ħ
+        bytes: '84'
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F600-U+1F64F
+      control_id: A-015
+    - char: 😁
+      emoji: 😁
+      name: beaming face with smiling eyes
+      codepoints:
+      - U+1F601
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ĺ
+        bytes: '98'
+        lead_byte: other
+      - token: ģ
+        bytes: '81'
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F600-U+1F64F
+      control_id: A-016
+    - char: 😆
+      emoji: 😆
+      name: grinning squinting face
+      codepoints:
+      - U+1F606
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ĺ
+        bytes: '98'
+        lead_byte: other
+      - token: Ĩ
+        bytes: '86'
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F600-U+1F64F
+      control_id: A-017
+    - char: 😅
+      emoji: 😅
+      name: grinning face with sweat
+      codepoints:
+      - U+1F605
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ĺ
+        bytes: '98'
+        lead_byte: other
+      - token: ħ
+        bytes: '85'
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F600-U+1F64F
+      control_id: A-018
+    - char: 😂
+      emoji: 😂
+      name: face with tears of joy
+      codepoints:
+      - U+1F602
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ĺ
+        bytes: '98'
+        lead_byte: other
+      - token: Ĥ
+        bytes: '82'
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F600-U+1F64F
+      gloss: laugh
+      control_id: A-019
+    - char: 🙃
+      emoji: 🙃
+      name: upside-down face
+      codepoints:
+      - U+1F643
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: Ļ
+        bytes: '99'
+        lead_byte: other
+      - token: ĥ
+        bytes: '83'
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F600-U+1F64F
+      control_id: A-020
+    - char: 😉
+      emoji: 😉
+      name: winking face
+      codepoints:
+      - U+1F609
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ĺ
+        bytes: '98'
+        lead_byte: other
+      - token: ī
+        bytes: '89'
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F600-U+1F64F
+      control_id: A-021
+    - char: 😊
+      emoji: 😊
+      name: smiling face with smiling eyes
+      codepoints:
+      - U+1F60A
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ĺ
+        bytes: '98'
+        lead_byte: other
+      - token: Ĭ
+        bytes: 8A
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F600-U+1F64F
+      gloss: smile
+      control_id: A-022
+    - char: 😍
+      emoji: 😍
+      name: smiling face with heart-eyes
+      codepoints:
+      - U+1F60D
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ĺ
+        bytes: '98'
+        lead_byte: other
+      - token: į
+        bytes: 8D
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F600-U+1F64F
+      gloss: heart
+      control_id: A-023
+    - char: 🙂
+      emoji: 🙂
+      name: slightly smiling face
+      codepoints:
+      - U+1F642
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 2
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ĻĤ
+        bytes: 99 82
+        lead_byte: other
+      mismatch_flags:
+      - expected 3 fragments, tokenizer gave 2
+      unicode_block: U+1F600-U+1F64F
+      control_id: A-024
+    - char: 🚀
+      emoji: 🚀
+      name: rocket
+      codepoints:
+      - U+1F680
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ļ
+        bytes: 9A
+        lead_byte: other
+      - token: Ģ
+        bytes: '80'
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F680-U+1F6FF
+      gloss: rocket
+      control_id: A-025
+    - char: 🚁
+      emoji: 🚁
+      name: helicopter
+      codepoints:
+      - U+1F681
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ļ
+        bytes: 9A
+        lead_byte: other
+      - token: ģ
+        bytes: '81'
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F680-U+1F6FF
+      gloss: helicopter
+      control_id: A-026
+    - char: 🚂
+      emoji: 🚂
+      name: locomotive
+      codepoints:
+      - U+1F682
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ļ
+        bytes: 9A
+        lead_byte: other
+      - token: Ĥ
+        bytes: '82'
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F680-U+1F6FF
+      control_id: A-027
+    - char: 🚄
+      emoji: 🚄
+      name: high-speed train
+      codepoints:
+      - U+1F684
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ļ
+        bytes: 9A
+        lead_byte: other
+      - token: Ħ
+        bytes: '84'
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F680-U+1F6FF
+      control_id: A-028
+    - char: 🚅
+      emoji: 🚅
+      name: bullet train
+      codepoints:
+      - U+1F685
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ļ
+        bytes: 9A
+        lead_byte: other
+      - token: ħ
+        bytes: '85'
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F680-U+1F6FF
+      control_id: A-029
+    - char: 🚆
+      emoji: 🚆
+      name: train
+      codepoints:
+      - U+1F686
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ļ
+        bytes: 9A
+        lead_byte: other
+      - token: Ĩ
+        bytes: '86'
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F680-U+1F6FF
+      control_id: A-030
+    - char: 🚇
+      emoji: 🚇
+      name: metro
+      codepoints:
+      - U+1F687
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ļ
+        bytes: 9A
+        lead_byte: other
+      - token: ĩ
+        bytes: '87'
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F680-U+1F6FF
+      control_id: A-031
+    - char: 🚊
+      emoji: 🚊
+      name: tram
+      codepoints:
+      - U+1F68A
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ļ
+        bytes: 9A
+        lead_byte: other
+      - token: Ĭ
+        bytes: 8A
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F680-U+1F6FF
+      control_id: A-032
+    - char: 🚌
+      emoji: 🚌
+      name: bus
+      codepoints:
+      - U+1F68C
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ļ
+        bytes: 9A
+        lead_byte: other
+      - token: Į
+        bytes: 8C
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F680-U+1F6FF
+      control_id: A-033
+    - char: 🚑
+      emoji: 🚑
+      name: ambulance
+      codepoints:
+      - U+1F691
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ļ
+        bytes: 9A
+        lead_byte: other
+      - token: ĳ
+        bytes: '91'
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F680-U+1F6FF
+      control_id: A-034
+    - char: 🚕
+      emoji: 🚕
+      name: taxi
+      codepoints:
+      - U+1F695
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ļ
+        bytes: 9A
+        lead_byte: other
+      - token: ķ
+        bytes: '95'
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F680-U+1F6FF
+      control_id: A-035
+    - char: 🚲
+      emoji: 🚲
+      name: bicycle
+      codepoints:
+      - U+1F6B2
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ļ
+        bytes: 9A
+        lead_byte: other
+      - token: ²
+        bytes: B2
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F680-U+1F6FF
+      gloss: bicycle
+      control_id: A-036
+    - char: 🤔
+      emoji: 🤔
+      name: thinking face
+      codepoints:
+      - U+1F914
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ¤
+        bytes: A4
+        lead_byte: other
+      - token: Ķ
+        bytes: '94'
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F900-U+1F9FF
+      control_id: A-037
+    - char: 🤗
+      emoji: 🤗
+      name: smiling face with open hands
+      codepoints:
+      - U+1F917
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ¤
+        bytes: A4
+        lead_byte: other
+      - token: Ĺ
+        bytes: '97'
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F900-U+1F9FF
+      control_id: A-038
+    - char: 🤠
+      emoji: 🤠
+      name: cowboy hat face
+      codepoints:
+      - U+1F920
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ¤
+        bytes: A4
+        lead_byte: other
+      - token: ł
+        bytes: A0
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F900-U+1F9FF
+      control_id: A-039
+    - char: 🤡
+      emoji: 🤡
+      name: clown face
+      codepoints:
+      - U+1F921
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ¤
+        bytes: A4
+        lead_byte: other
+      - token: ¡
+        bytes: A1
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F900-U+1F9FF
+      control_id: A-040
+    - char: 🤢
+      emoji: 🤢
+      name: nauseated face
+      codepoints:
+      - U+1F922
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ¤
+        bytes: A4
+        lead_byte: other
+      - token: ¢
+        bytes: A2
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F900-U+1F9FF
+      control_id: A-041
+    - char: 🤧
+      emoji: 🤧
+      name: sneezing face
+      codepoints:
+      - U+1F927
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ¤
+        bytes: A4
+        lead_byte: other
+      - token: §
+        bytes: A7
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F900-U+1F9FF
+      control_id: A-042
+    - char: 🤯
+      emoji: 🤯
+      name: exploding head
+      codepoints:
+      - U+1F92F
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ¤
+        bytes: A4
+        lead_byte: other
+      - token: ¯
+        bytes: AF
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F900-U+1F9FF
+      control_id: A-043
+    - char: 🤩
+      emoji: 🤩
+      name: star-struck
+      codepoints:
+      - U+1F929
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ¤
+        bytes: A4
+        lead_byte: other
+      - token: ©
+        bytes: A9
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F900-U+1F9FF
+      control_id: A-044
+    - char: 🤫
+      emoji: 🤫
+      name: shushing face
+      codepoints:
+      - U+1F92B
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ¤
+        bytes: A4
+        lead_byte: other
+      - token: «
+        bytes: AB
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F900-U+1F9FF
+      control_id: A-045
+    - char: 🤭
+      emoji: 🤭
+      name: face with hand over mouth
+      codepoints:
+      - U+1F92D
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ¤
+        bytes: A4
+        lead_byte: other
+      - token: Ń
+        bytes: AD
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F900-U+1F9FF
+      control_id: A-046
+    - char: 🤖
+      emoji: 🤖
+      name: robot
+      codepoints:
+      - U+1F916
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ¤
+        bytes: A4
+        lead_byte: other
+      - token: ĸ
+        bytes: '96'
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F900-U+1F9FF
+      gloss: robot
+      control_id: A-047
+    - char: 🧠
+      emoji: 🧠
+      name: brain
+      codepoints:
+      - U+1F9E0
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: §
+        bytes: A7
+        lead_byte: other
+      - token: ł
+        bytes: A0
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1F900-U+1F9FF
+      gloss: brain
+      control_id: A-048
+    - char: 🩰
+      emoji: 🩰
+      name: ballet shoes
+      codepoints:
+      - U+1FA70
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ©
+        bytes: A9
+        lead_byte: other
+      - token: °
+        bytes: B0
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1FA70-U+1FAFF
+      control_id: A-049
+    - char: 🩱
+      emoji: 🩱
+      name: one-piece swimsuit
+      codepoints:
+      - U+1FA71
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ©
+        bytes: A9
+        lead_byte: other
+      - token: ±
+        bytes: B1
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1FA70-U+1FAFF
+      control_id: A-050
+    - char: 🩲
+      emoji: 🩲
+      name: briefs
+      codepoints:
+      - U+1FA72
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ©
+        bytes: A9
+        lead_byte: other
+      - token: ²
+        bytes: B2
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1FA70-U+1FAFF
+      control_id: A-051
+    - char: 🩳
+      emoji: 🩳
+      name: shorts
+      codepoints:
+      - U+1FA73
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ©
+        bytes: A9
+        lead_byte: other
+      - token: ³
+        bytes: B3
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1FA70-U+1FAFF
+      control_id: A-052
+    - char: 🩴
+      emoji: 🩴
+      name: thong sandal
+      codepoints:
+      - U+1FA74
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ©
+        bytes: A9
+        lead_byte: other
+      - token: ´
+        bytes: B4
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1FA70-U+1FAFF
+      control_id: A-053
+    - char: 🪀
+      emoji: 🪀
+      name: yo-yo
+      codepoints:
+      - U+1FA80
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ª
+        bytes: AA
+        lead_byte: other
+      - token: Ģ
+        bytes: '80'
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1FA70-U+1FAFF
+      control_id: A-054
+    - char: 🪁
+      emoji: 🪁
+      name: kite
+      codepoints:
+      - U+1FA81
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ª
+        bytes: AA
+        lead_byte: other
+      - token: ģ
+        bytes: '81'
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1FA70-U+1FAFF
+      control_id: A-055
+    - char: 🪂
+      emoji: 🪂
+      name: parachute
+      codepoints:
+      - U+1FA82
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ª
+        bytes: AA
+        lead_byte: other
+      - token: Ĥ
+        bytes: '82'
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1FA70-U+1FAFF
+      control_id: A-056
+    - char: 🪄
+      emoji: 🪄
+      name: magic wand
+      codepoints:
+      - U+1FA84
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ª
+        bytes: AA
+        lead_byte: other
+      - token: Ħ
+        bytes: '84'
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1FA70-U+1FAFF
+      control_id: A-057
+    - char: 🪅
+      emoji: 🪅
+      name: piñata
+      codepoints:
+      - U+1FA85
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ª
+        bytes: AA
+        lead_byte: other
+      - token: ħ
+        bytes: '85'
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1FA70-U+1FAFF
+      control_id: A-058
+    - char: 🪩
+      emoji: 🪩
+      name: mirror ball
+      codepoints:
+      - U+1FAA9
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ª
+        bytes: AA
+        lead_byte: other
+      - token: ©
+        bytes: A9
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1FA70-U+1FAFF
+      control_id: A-059
+    - char: 🪆
+      emoji: 🪆
+      name: nesting dolls
+      codepoints:
+      - U+1FA86
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ª
+        bytes: AA
+        lead_byte: other
+      - token: Ĩ
+        bytes: '86'
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+1FA70-U+1FAFF
+      control_id: A-060
+  B_bmp_e2_symbols:
+    stratum: B_bmp_e2_fragmenting
+    tests: Does the F0 9F result differ from E2-leading BMP symbols that fragment?
+    lead_byte_token: E2
+    predicted_sinks: 0
+    items:
+    - char: ☀️
+      emoji: ☀️
+      name: sun
+      codepoints:
+      - U+2600
+      - U+FE0F
+      expected_lead_byte: E2
+      expected_fragment_count: 5
+      actual_fragment_count: 5
+      actual_lead_bytes:
+      - E2
+      - other
+      - other
+      - other
+      - other
+      token_split:
+      - token: âĺ
+        bytes: E2 98
+        lead_byte: E2
+      - token: Ģ
+        bytes: '80'
+        lead_byte: other
+      - token: ï
+        bytes: EF
+        lead_byte: other
+      - token: ¸
+        bytes: B8
+        lead_byte: other
+      - token: ı
+        bytes: 8F
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+2600-U+26FF
+    - char: ☁️
+      emoji: ☁️
+      name: cloud
+      codepoints:
+      - U+2601
+      - U+FE0F
+      expected_lead_byte: E2
+      expected_fragment_count: 5
+      actual_fragment_count: 5
+      actual_lead_bytes:
+      - E2
+      - other
+      - other
+      - other
+      - other
+      token_split:
+      - token: âĺ
+        bytes: E2 98
+        lead_byte: E2
+      - token: ģ
+        bytes: '81'
+        lead_byte: other
+      - token: ï
+        bytes: EF
+        lead_byte: other
+      - token: ¸
+        bytes: B8
+        lead_byte: other
+      - token: ı
+        bytes: 8F
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+2600-U+26FF
+    - char: ☂️
+      emoji: ☂️
+      name: umbrella
+      codepoints:
+      - U+2602
+      - U+FE0F
+      expected_lead_byte: E2
+      expected_fragment_count: 5
+      actual_fragment_count: 5
+      actual_lead_bytes:
+      - E2
+      - other
+      - other
+      - other
+      - other
+      token_split:
+      - token: âĺ
+        bytes: E2 98
+        lead_byte: E2
+      - token: Ĥ
+        bytes: '82'
+        lead_byte: other
+      - token: ï
+        bytes: EF
+        lead_byte: other
+      - token: ¸
+        bytes: B8
+        lead_byte: other
+      - token: ı
+        bytes: 8F
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+2600-U+26FF
+    - char: ☄️
+      emoji: ☄️
+      name: comet
+      codepoints:
+      - U+2604
+      - U+FE0F
+      expected_lead_byte: E2
+      expected_fragment_count: 5
+      actual_fragment_count: 5
+      actual_lead_bytes:
+      - E2
+      - other
+      - other
+      - other
+      - other
+      token_split:
+      - token: âĺ
+        bytes: E2 98
+        lead_byte: E2
+      - token: Ħ
+        bytes: '84'
+        lead_byte: other
+      - token: ï
+        bytes: EF
+        lead_byte: other
+      - token: ¸
+        bytes: B8
+        lead_byte: other
+      - token: ı
+        bytes: 8F
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+2600-U+26FF
+    - char: ☎️
+      emoji: ☎️
+      name: telephone
+      codepoints:
+      - U+260E
+      - U+FE0F
+      expected_lead_byte: E2
+      expected_fragment_count: 5
+      actual_fragment_count: 5
+      actual_lead_bytes:
+      - E2
+      - other
+      - other
+      - other
+      - other
+      token_split:
+      - token: âĺ
+        bytes: E2 98
+        lead_byte: E2
+      - token: İ
+        bytes: 8E
+        lead_byte: other
+      - token: ï
+        bytes: EF
+        lead_byte: other
+      - token: ¸
+        bytes: B8
+        lead_byte: other
+      - token: ı
+        bytes: 8F
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+2600-U+26FF
+    - char: ☔
+      emoji: ☔
+      name: umbrella with rain drops
+      codepoints:
+      - U+2614
+      expected_lead_byte: E2
+      expected_fragment_count: 3
+      actual_fragment_count: 2
+      actual_lead_bytes:
+      - E2
+      - other
+      token_split:
+      - token: âĺ
+        bytes: E2 98
+        lead_byte: E2
+      - token: Ķ
+        bytes: '94'
+        lead_byte: other
+      mismatch_flags:
+      - expected 3 fragments, tokenizer gave 2
+      unicode_block: U+2600-U+26FF
+    - char: ☕
+      emoji: ☕
+      name: hot beverage
+      codepoints:
+      - U+2615
+      expected_lead_byte: E2
+      expected_fragment_count: 3
+      actual_fragment_count: 2
+      actual_lead_bytes:
+      - E2
+      - other
+      token_split:
+      - token: âĺ
+        bytes: E2 98
+        lead_byte: E2
+      - token: ķ
+        bytes: '95'
+        lead_byte: other
+      mismatch_flags:
+      - expected 3 fragments, tokenizer gave 2
+      unicode_block: U+2600-U+26FF
+    - char: ♈
+      emoji: ♈
+      name: Aries
+      codepoints:
+      - U+2648
+      expected_lead_byte: E2
+      expected_fragment_count: 3
+      actual_fragment_count: 2
+      actual_lead_bytes:
+      - E2
+      - other
+      token_split:
+      - token: âĻ
+        bytes: E2 99
+        lead_byte: E2
+      - token: Ī
+        bytes: '88'
+        lead_byte: other
+      mismatch_flags:
+      - expected 3 fragments, tokenizer gave 2
+      unicode_block: U+2600-U+26FF
+    - char: ♉
+      emoji: ♉
+      name: Taurus
+      codepoints:
+      - U+2649
+      expected_lead_byte: E2
+      expected_fragment_count: 3
+      actual_fragment_count: 2
+      actual_lead_bytes:
+      - E2
+      - other
+      token_split:
+      - token: âĻ
+        bytes: E2 99
+        lead_byte: E2
+      - token: ī
+        bytes: '89'
+        lead_byte: other
+      mismatch_flags:
+      - expected 3 fragments, tokenizer gave 2
+      unicode_block: U+2600-U+26FF
+    - char: ♊
+      emoji: ♊
+      name: Gemini
+      codepoints:
+      - U+264A
+      expected_lead_byte: E2
+      expected_fragment_count: 3
+      actual_fragment_count: 2
+      actual_lead_bytes:
+      - E2
+      - other
+      token_split:
+      - token: âĻ
+        bytes: E2 99
+        lead_byte: E2
+      - token: Ĭ
+        bytes: 8A
+        lead_byte: other
+      mismatch_flags:
+      - expected 3 fragments, tokenizer gave 2
+      unicode_block: U+2600-U+26FF
+    - char: ✂️
+      emoji: ✂️
+      name: scissors
+      codepoints:
+      - U+2702
+      - U+FE0F
+      expected_lead_byte: E2
+      expected_fragment_count: 5
+      actual_fragment_count: 6
+      actual_lead_bytes:
+      - E2
+      - other
+      - other
+      - other
+      - other
+      - other
+      token_split:
+      - token: â
+        bytes: E2
+        lead_byte: E2
+      - token: ľ
+        bytes: 9C
+        lead_byte: other
+      - token: Ĥ
+        bytes: '82'
+        lead_byte: other
+      - token: ï
+        bytes: EF
+        lead_byte: other
+      - token: ¸
+        bytes: B8
+        lead_byte: other
+      - token: ı
+        bytes: 8F
+        lead_byte: other
+      mismatch_flags:
+      - expected 5 fragments, tokenizer gave 6
+      unicode_block: U+2700-U+27BF
+    - char: ✈️
+      emoji: ✈️
+      name: airplane
+      codepoints:
+      - U+2708
+      - U+FE0F
+      expected_lead_byte: E2
+      expected_fragment_count: 5
+      actual_fragment_count: 6
+      actual_lead_bytes:
+      - E2
+      - other
+      - other
+      - other
+      - other
+      - other
+      token_split:
+      - token: â
+        bytes: E2
+        lead_byte: E2
+      - token: ľ
+        bytes: 9C
+        lead_byte: other
+      - token: Ī
+        bytes: '88'
+        lead_byte: other
+      - token: ï
+        bytes: EF
+        lead_byte: other
+      - token: ¸
+        bytes: B8
+        lead_byte: other
+      - token: ı
+        bytes: 8F
+        lead_byte: other
+      mismatch_flags:
+      - expected 5 fragments, tokenizer gave 6
+      unicode_block: U+2700-U+27BF
+    - char: ✉️
+      emoji: ✉️
+      name: envelope
+      codepoints:
+      - U+2709
+      - U+FE0F
+      expected_lead_byte: E2
+      expected_fragment_count: 5
+      actual_fragment_count: 6
+      actual_lead_bytes:
+      - E2
+      - other
+      - other
+      - other
+      - other
+      - other
+      token_split:
+      - token: â
+        bytes: E2
+        lead_byte: E2
+      - token: ľ
+        bytes: 9C
+        lead_byte: other
+      - token: ī
+        bytes: '89'
+        lead_byte: other
+      - token: ï
+        bytes: EF
+        lead_byte: other
+      - token: ¸
+        bytes: B8
+        lead_byte: other
+      - token: ı
+        bytes: 8F
+        lead_byte: other
+      mismatch_flags:
+      - expected 5 fragments, tokenizer gave 6
+      unicode_block: U+2700-U+27BF
+    - char: ✔️
+      emoji: ✔️
+      name: check mark
+      codepoints:
+      - U+2714
+      - U+FE0F
+      expected_lead_byte: E2
+      expected_fragment_count: 5
+      actual_fragment_count: 6
+      actual_lead_bytes:
+      - E2
+      - other
+      - other
+      - other
+      - other
+      - other
+      token_split:
+      - token: â
+        bytes: E2
+        lead_byte: E2
+      - token: ľ
+        bytes: 9C
+        lead_byte: other
+      - token: Ķ
+        bytes: '94'
+        lead_byte: other
+      - token: ï
+        bytes: EF
+        lead_byte: other
+      - token: ¸
+        bytes: B8
+        lead_byte: other
+      - token: ı
+        bytes: 8F
+        lead_byte: other
+      mismatch_flags:
+      - expected 5 fragments, tokenizer gave 6
+      unicode_block: U+2700-U+27BF
+    - char: ✖️
+      emoji: ✖️
+      name: multiply
+      codepoints:
+      - U+2716
+      - U+FE0F
+      expected_lead_byte: E2
+      expected_fragment_count: 5
+      actual_fragment_count: 6
+      actual_lead_bytes:
+      - E2
+      - other
+      - other
+      - other
+      - other
+      - other
+      token_split:
+      - token: â
+        bytes: E2
+        lead_byte: E2
+      - token: ľ
+        bytes: 9C
+        lead_byte: other
+      - token: ĸ
+        bytes: '96'
+        lead_byte: other
+      - token: ï
+        bytes: EF
+        lead_byte: other
+      - token: ¸
+        bytes: B8
+        lead_byte: other
+      - token: ı
+        bytes: 8F
+        lead_byte: other
+      mismatch_flags:
+      - expected 5 fragments, tokenizer gave 6
+      unicode_block: U+2700-U+27BF
+    - char: ✨
+      emoji: ✨
+      name: sparkles
+      codepoints:
+      - U+2728
+      expected_lead_byte: E2
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - E2
+      - other
+      - other
+      token_split:
+      - token: â
+        bytes: E2
+        lead_byte: E2
+      - token: ľ
+        bytes: 9C
+        lead_byte: other
+      - token: ¨
+        bytes: A8
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+2700-U+27BF
+    - char: ⭐
+      emoji: ⭐
+      name: star
+      codepoints:
+      - U+2B50
+      expected_lead_byte: E2
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - E2
+      - other
+      - other
+      token_split:
+      - token: â
+        bytes: E2
+        lead_byte: E2
+      - token: Ń
+        bytes: AD
+        lead_byte: other
+      - token: Ĳ
+        bytes: '90'
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+2B00-U+2BFF
+    - char: ⭕
+      emoji: ⭕
+      name: hollow red circle
+      codepoints:
+      - U+2B55
+      expected_lead_byte: E2
+      expected_fragment_count: 3
+      actual_fragment_count: 3
+      actual_lead_bytes:
+      - E2
+      - other
+      - other
+      token_split:
+      - token: â
+        bytes: E2
+        lead_byte: E2
+      - token: Ń
+        bytes: AD
+        lead_byte: other
+      - token: ķ
+        bytes: '95'
+        lead_byte: other
+      mismatch_flags: []
+      unicode_block: U+2B00-U+2BFF
+    - char: ⬆️
+      emoji: ⬆️
+      name: up arrow
+      codepoints:
+      - U+2B06
+      - U+FE0F
+      expected_lead_byte: E2
+      expected_fragment_count: 5
+      actual_fragment_count: 6
+      actual_lead_bytes:
+      - E2
+      - other
+      - other
+      - other
+      - other
+      - other
+      token_split:
+      - token: â
+        bytes: E2
+        lead_byte: E2
+      - token: ¬
+        bytes: AC
+        lead_byte: other
+      - token: Ĩ
+        bytes: '86'
+        lead_byte: other
+      - token: ï
+        bytes: EF
+        lead_byte: other
+      - token: ¸
+        bytes: B8
+        lead_byte: other
+      - token: ı
+        bytes: 8F
+        lead_byte: other
+      mismatch_flags:
+      - expected 5 fragments, tokenizer gave 6
+      unicode_block: U+2B00-U+2BFF
+    - char: ⬇️
+      emoji: ⬇️
+      name: down arrow
+      codepoints:
+      - U+2B07
+      - U+FE0F
+      expected_lead_byte: E2
+      expected_fragment_count: 5
+      actual_fragment_count: 6
+      actual_lead_bytes:
+      - E2
+      - other
+      - other
+      - other
+      - other
+      - other
+      token_split:
+      - token: â
+        bytes: E2
+        lead_byte: E2
+      - token: ¬
+        bytes: AC
+        lead_byte: other
+      - token: ĩ
+        bytes: '87'
+        lead_byte: other
+      - token: ï
+        bytes: EF
+        lead_byte: other
+      - token: ¸
+        bytes: B8
+        lead_byte: other
+      - token: ı
+        bytes: 8F
+        lead_byte: other
+      mismatch_flags:
+      - expected 5 fragments, tokenizer gave 6
+      unicode_block: U+2B00-U+2BFF
+  C_multi_f0_9f:
+    stratum: C_multi_f0_9f
+    tests: Do multiple F0 9F-leading fragments align with multi-codepoint emoji components?
+    lead_byte_token: F0 9F (repeated)
+    predicted_sinks: = f0_9f_count
+    items:
+    - char: 👍🏻
+      emoji: 👍🏻
+      name: thumbs up with light skin tone
+      codepoints:
+      - U+1F44D
+      - U+1F3FB
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 6
+      actual_fragment_count: 6
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ĳ
+        bytes: '91'
+        lead_byte: other
+      - token: į
+        bytes: 8D
+        lead_byte: other
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ı
+        bytes: 8F
+        lead_byte: other
+      - token: »
+        bytes: BB
+        lead_byte: other
+      mismatch_flags: []
+      f0_9f_count: 2
+    - char: 👍🏽
+      emoji: 👍🏽
+      name: thumbs up with medium skin tone
+      codepoints:
+      - U+1F44D
+      - U+1F3FD
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 6
+      actual_fragment_count: 6
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ĳ
+        bytes: '91'
+        lead_byte: other
+      - token: į
+        bytes: 8D
+        lead_byte: other
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ı
+        bytes: 8F
+        lead_byte: other
+      - token: ½
+        bytes: BD
+        lead_byte: other
+      mismatch_flags: []
+      f0_9f_count: 2
+    - char: 👋🏻
+      emoji: 👋🏻
+      name: wave with light skin tone
+      codepoints:
+      - U+1F44B
+      - U+1F3FB
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 6
+      actual_fragment_count: 6
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ĳ
+        bytes: '91'
+        lead_byte: other
+      - token: ĭ
+        bytes: 8B
+        lead_byte: other
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ı
+        bytes: 8F
+        lead_byte: other
+      - token: »
+        bytes: BB
+        lead_byte: other
+      mismatch_flags: []
+      f0_9f_count: 2
+    - char: 👋🏿
+      emoji: 👋🏿
+      name: wave with dark skin tone
+      codepoints:
+      - U+1F44B
+      - U+1F3FF
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 6
+      actual_fragment_count: 6
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ĳ
+        bytes: '91'
+        lead_byte: other
+      - token: ĭ
+        bytes: 8B
+        lead_byte: other
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ı
+        bytes: 8F
+        lead_byte: other
+      - token: ¿
+        bytes: BF
+        lead_byte: other
+      mismatch_flags: []
+      f0_9f_count: 2
+    - char: 👏🏻
+      emoji: 👏🏻
+      name: clapping with light skin tone
+      codepoints:
+      - U+1F44F
+      - U+1F3FB
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 6
+      actual_fragment_count: 6
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ĳ
+        bytes: '91'
+        lead_byte: other
+      - token: ı
+        bytes: 8F
+        lead_byte: other
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ı
+        bytes: 8F
+        lead_byte: other
+      - token: »
+        bytes: BB
+        lead_byte: other
+      mismatch_flags: []
+      f0_9f_count: 2
+    - char: 🙏🏽
+      emoji: 🙏🏽
+      name: folded hands with medium skin tone
+      codepoints:
+      - U+1F64F
+      - U+1F3FD
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 6
+      actual_fragment_count: 6
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: Ļ
+        bytes: '99'
+        lead_byte: other
+      - token: ı
+        bytes: 8F
+        lead_byte: other
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ı
+        bytes: 8F
+        lead_byte: other
+      - token: ½
+        bytes: BD
+        lead_byte: other
+      mismatch_flags: []
+      f0_9f_count: 2
+    - char: 💪🏽
+      emoji: 💪🏽
+      name: flexed arm with medium skin tone
+      codepoints:
+      - U+1F4AA
+      - U+1F3FD
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 6
+      actual_fragment_count: 6
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: Ĵ
+        bytes: '92'
+        lead_byte: other
+      - token: ª
+        bytes: AA
+        lead_byte: other
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ı
+        bytes: 8F
+        lead_byte: other
+      - token: ½
+        bytes: BD
+        lead_byte: other
+      mismatch_flags: []
+      f0_9f_count: 2
+    - char: 👎🏾
+      emoji: 👎🏾
+      name: thumbs down with medium dark skin tone
+      codepoints:
+      - U+1F44E
+      - U+1F3FE
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 6
+      actual_fragment_count: 6
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ĳ
+        bytes: '91'
+        lead_byte: other
+      - token: İ
+        bytes: 8E
+        lead_byte: other
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ı
+        bytes: 8F
+        lead_byte: other
+      - token: ¾
+        bytes: BE
+        lead_byte: other
+      mismatch_flags: []
+      f0_9f_count: 2
+    - char: 🧑‍💻
+      emoji: 🧑‍💻
+      name: computer user sequence
+      codepoints:
+      - U+1F9D1
+      - U+200D
+      - U+1F4BB
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 8
+      actual_fragment_count: 8
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      - E2
+      - other
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: §
+        bytes: A7
+        lead_byte: other
+      - token: ĳ
+        bytes: '91'
+        lead_byte: other
+      - token: âĢ
+        bytes: E2 80
+        lead_byte: E2
+      - token: į
+        bytes: 8D
+        lead_byte: other
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: Ĵ
+        bytes: '92'
+        lead_byte: other
+      - token: »
+        bytes: BB
+        lead_byte: other
+      mismatch_flags: []
+      f0_9f_count: 2
+    - char: 👩‍💻
+      emoji: 👩‍💻
+      name: laptop user sequence A
+      codepoints:
+      - U+1F469
+      - U+200D
+      - U+1F4BB
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 8
+      actual_fragment_count: 8
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      - E2
+      - other
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ĳ
+        bytes: '91'
+        lead_byte: other
+      - token: ©
+        bytes: A9
+        lead_byte: other
+      - token: âĢ
+        bytes: E2 80
+        lead_byte: E2
+      - token: į
+        bytes: 8D
+        lead_byte: other
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: Ĵ
+        bytes: '92'
+        lead_byte: other
+      - token: »
+        bytes: BB
+        lead_byte: other
+      mismatch_flags: []
+      f0_9f_count: 2
+    - char: 👩‍🔬
+      emoji: 👩‍🔬
+      name: lab instrument user sequence A
+      codepoints:
+      - U+1F469
+      - U+200D
+      - U+1F52C
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 8
+      actual_fragment_count: 8
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      - E2
+      - other
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ĳ
+        bytes: '91'
+        lead_byte: other
+      - token: ©
+        bytes: A9
+        lead_byte: other
+      - token: âĢ
+        bytes: E2 80
+        lead_byte: E2
+      - token: į
+        bytes: 8D
+        lead_byte: other
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: Ķ
+        bytes: '94'
+        lead_byte: other
+      - token: ¬
+        bytes: AC
+        lead_byte: other
+      mismatch_flags: []
+      f0_9f_count: 2
+    - char: 👩‍🚀
+      emoji: 👩‍🚀
+      name: space traveler sequence
+      codepoints:
+      - U+1F469
+      - U+200D
+      - U+1F680
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 8
+      actual_fragment_count: 8
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      - E2
+      - other
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ĳ
+        bytes: '91'
+        lead_byte: other
+      - token: ©
+        bytes: A9
+        lead_byte: other
+      - token: âĢ
+        bytes: E2 80
+        lead_byte: E2
+      - token: į
+        bytes: 8D
+        lead_byte: other
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ļ
+        bytes: 9A
+        lead_byte: other
+      - token: Ģ
+        bytes: '80'
+        lead_byte: other
+      mismatch_flags: []
+      f0_9f_count: 2
+    - char: 👨‍👩‍👧
+      emoji: 👨‍👩‍👧
+      name: three person family sequence
+      codepoints:
+      - U+1F468
+      - U+200D
+      - U+1F469
+      - U+200D
+      - U+1F467
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 13
+      actual_fragment_count: 13
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      - E2
+      - other
+      - F0 9F
+      - other
+      - other
+      - E2
+      - other
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ĳ
+        bytes: '91'
+        lead_byte: other
+      - token: ¨
+        bytes: A8
+        lead_byte: other
+      - token: âĢ
+        bytes: E2 80
+        lead_byte: E2
+      - token: į
+        bytes: 8D
+        lead_byte: other
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ĳ
+        bytes: '91'
+        lead_byte: other
+      - token: ©
+        bytes: A9
+        lead_byte: other
+      - token: âĢ
+        bytes: E2 80
+        lead_byte: E2
+      - token: į
+        bytes: 8D
+        lead_byte: other
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ĳ
+        bytes: '91'
+        lead_byte: other
+      - token: §
+        bytes: A7
+        lead_byte: other
+      mismatch_flags: []
+      f0_9f_count: 3
+    - char: 👨‍👩‍👧‍👦
+      emoji: 👨‍👩‍👧‍👦
+      name: four person family sequence
+      codepoints:
+      - U+1F468
+      - U+200D
+      - U+1F469
+      - U+200D
+      - U+1F467
+      - U+200D
+      - U+1F466
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 18
+      actual_fragment_count: 18
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      - E2
+      - other
+      - F0 9F
+      - other
+      - other
+      - E2
+      - other
+      - F0 9F
+      - other
+      - other
+      - E2
+      - other
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ĳ
+        bytes: '91'
+        lead_byte: other
+      - token: ¨
+        bytes: A8
+        lead_byte: other
+      - token: âĢ
+        bytes: E2 80
+        lead_byte: E2
+      - token: į
+        bytes: 8D
+        lead_byte: other
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ĳ
+        bytes: '91'
+        lead_byte: other
+      - token: ©
+        bytes: A9
+        lead_byte: other
+      - token: âĢ
+        bytes: E2 80
+        lead_byte: E2
+      - token: į
+        bytes: 8D
+        lead_byte: other
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ĳ
+        bytes: '91'
+        lead_byte: other
+      - token: §
+        bytes: A7
+        lead_byte: other
+      - token: âĢ
+        bytes: E2 80
+        lead_byte: E2
+      - token: į
+        bytes: 8D
+        lead_byte: other
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ĳ
+        bytes: '91'
+        lead_byte: other
+      - token: ¦
+        bytes: A6
+        lead_byte: other
+      mismatch_flags: []
+      f0_9f_count: 4
+    - char: 🇸🇬
+      emoji: 🇸🇬
+      name: Singapore flag
+      codepoints:
+      - U+1F1F8
+      - U+1F1EC
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 6
+      actual_fragment_count: 6
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ĩ
+        bytes: '87'
+        lead_byte: other
+      - token: ¸
+        bytes: B8
+        lead_byte: other
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ĩ
+        bytes: '87'
+        lead_byte: other
+      - token: ¬
+        bytes: AC
+        lead_byte: other
+      mismatch_flags: []
+      f0_9f_count: 2
+    - char: 🇺🇸
+      emoji: 🇺🇸
+      name: United States flag
+      codepoints:
+      - U+1F1FA
+      - U+1F1F8
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 6
+      actual_fragment_count: 6
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ĩ
+        bytes: '87'
+        lead_byte: other
+      - token: º
+        bytes: BA
+        lead_byte: other
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ĩ
+        bytes: '87'
+        lead_byte: other
+      - token: ¸
+        bytes: B8
+        lead_byte: other
+      mismatch_flags: []
+      f0_9f_count: 2
+    - char: 🇬🇧
+      emoji: 🇬🇧
+      name: United Kingdom flag
+      codepoints:
+      - U+1F1EC
+      - U+1F1E7
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 6
+      actual_fragment_count: 6
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ĩ
+        bytes: '87'
+        lead_byte: other
+      - token: ¬
+        bytes: AC
+        lead_byte: other
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ĩ
+        bytes: '87'
+        lead_byte: other
+      - token: §
+        bytes: A7
+        lead_byte: other
+      mismatch_flags: []
+      f0_9f_count: 2
+    - char: 🇯🇵
+      emoji: 🇯🇵
+      name: Japan flag
+      codepoints:
+      - U+1F1EF
+      - U+1F1F5
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 6
+      actual_fragment_count: 6
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ĩ
+        bytes: '87'
+        lead_byte: other
+      - token: ¯
+        bytes: AF
+        lead_byte: other
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ĩ
+        bytes: '87'
+        lead_byte: other
+      - token: µ
+        bytes: B5
+        lead_byte: other
+      mismatch_flags: []
+      f0_9f_count: 2
+    - char: 🇨🇦
+      emoji: 🇨🇦
+      name: Canada flag
+      codepoints:
+      - U+1F1E8
+      - U+1F1E6
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 6
+      actual_fragment_count: 6
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ĩ
+        bytes: '87'
+        lead_byte: other
+      - token: ¨
+        bytes: A8
+        lead_byte: other
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ĩ
+        bytes: '87'
+        lead_byte: other
+      - token: ¦
+        bytes: A6
+        lead_byte: other
+      mismatch_flags: []
+      f0_9f_count: 2
+    - char: 🇫🇷
+      emoji: 🇫🇷
+      name: France flag
+      codepoints:
+      - U+1F1EB
+      - U+1F1F7
+      expected_lead_byte: F0 9F
+      expected_fragment_count: 6
+      actual_fragment_count: 6
+      actual_lead_bytes:
+      - F0 9F
+      - other
+      - other
+      - F0 9F
+      - other
+      - other
+      token_split:
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ĩ
+        bytes: '87'
+        lead_byte: other
+      - token: «
+        bytes: AB
+        lead_byte: other
+      - token: ðŁ
+        bytes: F0 9F
+        lead_byte: F0 9F
+      - token: ĩ
+        bytes: '87'
+        lead_byte: other
+      - token: ·
+        bytes: B7
+        lead_byte: other
+      mismatch_flags: []
+      f0_9f_count: 2
+  D_nonemoji_e2:
+    stratum: D_rare_whole_token
+    tests: Do rare E2-leading whole tokens also show a sink-like peak?
+    lead_byte_token: E2
+    predicted_sinks: unregistered exploratory alternative
+    items:
+    - char: ™
+      emoji: ™
+      name: trade mark sign
+      codepoints:
+      - U+2122
+      expected_lead_byte: E2
+      expected_fragment_count: 1
+      actual_fragment_count: 1
+      actual_lead_bytes:
+      - E2
+      token_split:
+      - token: âĦ¢
+        bytes: E2 84 A2
+        lead_byte: E2
+      mismatch_flags: []
+      unicode_block: rare-whole-token candidate pool
+      f0_9f_count: 0
+    - char: †
+      emoji: †
+      name: dagger
+      codepoints:
+      - U+2020
+      expected_lead_byte: E2
+      expected_fragment_count: 1
+      actual_fragment_count: 1
+      actual_lead_bytes:
+      - E2
+      token_split:
+      - token: âĢł
+        bytes: E2 80 A0
+        lead_byte: E2
+      mismatch_flags: []
+      unicode_block: rare-whole-token candidate pool
+      f0_9f_count: 0
+    - char: ‡
+      emoji: ‡
+      name: double dagger
+      codepoints:
+      - U+2021
+      expected_lead_byte: E2
+      expected_fragment_count: 1
+      actual_fragment_count: 1
+      actual_lead_bytes:
+      - E2
+      token_split:
+      - token: âĢ¡
+        bytes: E2 80 A1
+        lead_byte: E2
+      mismatch_flags: []
+      unicode_block: rare-whole-token candidate pool
+      f0_9f_count: 0
+    - char: ★
+      emoji: ★
+      name: black star
+      codepoints:
+      - U+2605
+      expected_lead_byte: E2
+      expected_fragment_count: 1
+      actual_fragment_count: 1
+      actual_lead_bytes:
+      - E2
+      token_split:
+      - token: âĺħ
+        bytes: E2 98 85
+        lead_byte: E2
+      mismatch_flags: []
+      unicode_block: rare-whole-token candidate pool
+      f0_9f_count: 0
+    - char: →
+      emoji: →
+      name: rightwards arrow
+      codepoints:
+      - U+2192
+      expected_lead_byte: E2
+      expected_fragment_count: 1
+      actual_fragment_count: 1
+      actual_lead_bytes:
+      - E2
+      token_split:
+      - token: âĨĴ
+        bytes: E2 86 92
+        lead_byte: E2
+      mismatch_flags: []
+      unicode_block: rare-whole-token candidate pool
+      f0_9f_count: 0
+    - char: …
+      emoji: …
+      name: horizontal ellipsis
+      codepoints:
+      - U+2026
+      expected_lead_byte: E2
+      expected_fragment_count: 1
+      actual_fragment_count: 1
+      actual_lead_bytes:
+      - E2
+      token_split:
+      - token: âĢ¦
+        bytes: E2 80 A6
+        lead_byte: E2
+      mismatch_flags: []
+      unicode_block: rare-whole-token candidate pool
+      f0_9f_count: 0
+    - char: ′
+      emoji: ′
+      name: prime
+      codepoints:
+      - U+2032
+      expected_lead_byte: E2
+      expected_fragment_count: 1
+      actual_fragment_count: 1
+      actual_lead_bytes:
+      - E2
+      token_split:
+      - token: âĢ²
+        bytes: E2 80 B2
+        lead_byte: E2
+      mismatch_flags: []
+      unicode_block: rare-whole-token candidate pool
+      f0_9f_count: 0
+    - char: ″
+      emoji: ″
+      name: double prime
+      codepoints:
+      - U+2033
+      expected_lead_byte: E2
+      expected_fragment_count: 1
+      actual_fragment_count: 1
+      actual_lead_bytes:
+      - E2
+      token_split:
+      - token: âĢ³
+        bytes: E2 80 B3
+        lead_byte: E2
+      mismatch_flags: []
+      unicode_block: rare-whole-token candidate pool
+      f0_9f_count: 0
+    - char: ⁄
+      emoji: ⁄
+      name: fraction slash
+      codepoints:
+      - U+2044
+      expected_lead_byte: E2
+      expected_fragment_count: 1
+      actual_fragment_count: 1
+      actual_lead_bytes:
+      - E2
+      token_split:
+      - token: âģĦ
+        bytes: E2 81 84
+        lead_byte: E2
+      mismatch_flags: []
+      unicode_block: rare-whole-token candidate pool
+      f0_9f_count: 0
+    - char: €
+      emoji: €
+      name: euro sign
+      codepoints:
+      - U+20AC
+      expected_lead_byte: E2
+      expected_fragment_count: 1
+      actual_fragment_count: 1
+      actual_lead_bytes:
+      - E2
+      token_split:
+      - token: âĤ¬
+        bytes: E2 82 AC
+        lead_byte: E2
+      mismatch_flags: []
+      unicode_block: rare-whole-token candidate pool
+      f0_9f_count: 0
+    - char: −
+      emoji: −
+      name: minus sign
+      codepoints:
+      - U+2212
+      expected_lead_byte: E2
+      expected_fragment_count: 1
+      actual_fragment_count: 1
+      actual_lead_bytes:
+      - E2
+      token_split:
+      - token: âĪĴ
+        bytes: E2 88 92
+        lead_byte: E2
+      mismatch_flags: []
+      unicode_block: rare-whole-token candidate pool
+      f0_9f_count: 0
+    - char: ∗
+      emoji: ∗
+      name: asterisk operator
+      codepoints:
+      - U+2217
+      expected_lead_byte: E2
+      expected_fragment_count: 1
+      actual_fragment_count: 1
+      actual_lead_bytes:
+      - E2
+      token_split:
+      - token: âĪĹ
+        bytes: E2 88 97
+        lead_byte: E2
+      mismatch_flags: []
+      unicode_block: rare-whole-token candidate pool
+      f0_9f_count: 0
+    - char: ∶
+      emoji: ∶
+      name: ratio
+      codepoints:
+      - U+2236
+      expected_lead_byte: E2
+      expected_fragment_count: 1
+      actual_fragment_count: 1
+      actual_lead_bytes:
+      - E2
+      token_split:
+      - token: âĪ¶
+        bytes: E2 88 B6
+        lead_byte: E2
+      mismatch_flags: []
+      unicode_block: rare-whole-token candidate pool
+      f0_9f_count: 0
+    - char: ∼
+      emoji: ∼
+      name: tilde operator
+      codepoints:
+      - U+223C
+      expected_lead_byte: E2
+      expected_fragment_count: 1
+      actual_fragment_count: 1
+      actual_lead_bytes:
+      - E2
+      token_split:
+      - token: âĪ¼
+        bytes: E2 88 BC
+        lead_byte: E2
+      mismatch_flags: []
+      unicode_block: rare-whole-token candidate pool
+      f0_9f_count: 0
+    - char: ≤
+      emoji: ≤
+      name: less-than or equal to
+      codepoints:
+      - U+2264
+      expected_lead_byte: E2
+      expected_fragment_count: 1
+      actual_fragment_count: 1
+      actual_lead_bytes:
+      - E2
+      token_split:
+      - token: âī¤
+        bytes: E2 89 A4
+        lead_byte: E2
+      mismatch_flags: []
+      unicode_block: rare-whole-token candidate pool
+      f0_9f_count: 0
+  R_reference:
+    tests: Fixed ordinary-word and hex baselines plus controls linked to every A item.
+    note: The RGI/rare control list is outside the 120-item stratified set.
+    items:
+    - text: rocket
+      char: rocket
+      name: ordinary word
+      kind: ordinary_word
+      codepoints:
+      - U+0072
+      - U+006F
+      - U+0063
+      - U+006B
+      - U+0065
+      - U+0074
+      expected_lead_byte: other
+      expected_fragment_count: 2
+      actual_fragment_count: 2
+      actual_lead_bytes:
+      - other
+      - other
+      token_split:
+      - token: rock
+        bytes: 72 6F 63 6B
+        lead_byte: other
+      - token: et
+        bytes: 65 74
+        lead_byte: other
+      mismatch_flags: []
+    - text: table
+      char: table
+      name: ordinary word
+      kind: ordinary_word
+      codepoints:
+      - U+0074
+      - U+0061
+      - U+0062
+      - U+006C
+      - U+0065
+      expected_lead_byte: other
+      expected_fragment_count: 1
+      actual_fragment_count: 1
+      actual_lead_bytes:
+      - other
+      token_split:
+      - token: table
+        bytes: 74 61 62 6C 65
+        lead_byte: other
+      mismatch_flags: []
+    - text: window
+      char: window
+      name: ordinary word
+      kind: ordinary_word
+      codepoints:
+      - U+0077
+      - U+0069
+      - U+006E
+      - U+0064
+      - U+006F
+      - U+0077
+      expected_lead_byte: other
+      expected_fragment_count: 1
+      actual_fragment_count: 1
+      actual_lead_bytes:
+      - other
+      token_split:
+      - token: window
+        bytes: 77 69 6E 64 6F 77
+        lead_byte: other
+      mismatch_flags: []
+    - text: e2b1c4f0
+      char: e2b1c4f0
+      name: hex fragment
+      kind: hex_fragment
+      codepoints:
+      - U+0065
+      - U+0032
+      - U+0062
+      - U+0031
+      - U+0063
+      - U+0034
+      - U+0066
+      - U+0030
+      expected_lead_byte: other
+      expected_fragment_count: 8
+      actual_fragment_count: 8
+      actual_lead_bytes:
+      - other
+      - other
+      - other
+      - other
+      - other
+      - other
+      - other
+      - other
+      token_split:
+      - token: e
+        bytes: '65'
+        lead_byte: other
+      - token: '2'
+        bytes: '32'
+        lead_byte: other
+      - token: b
+        bytes: '62'
+        lead_byte: other
+      - token: '1'
+        bytes: '31'
+        lead_byte: other
+      - token: c
+        bytes: '63'
+        lead_byte: other
+      - token: '4'
+        bytes: '34'
+        lead_byte: other
+      - token: f
+        bytes: '66'
+        lead_byte: other
+      - token: '0'
+        bytes: '30'
+        lead_byte: other
+      mismatch_flags: []
+    generated_controls:
+    - control_id: A-001
+      for_char: 🌀
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: † † †
+        char: † † †
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2020
+        - U+0020
+        - U+2020
+        - U+0020
+        - U+2020
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĢł
+          bytes: E2 80 A0
+          lead_byte: E2
+        - token: ĠâĢł
+          bytes: 20 E2 80 A0
+          lead_byte: other
+        - token: ĠâĢł
+          bytes: 20 E2 80 A0
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: †
+        source_rare_name: dagger
+    - control_id: A-002
+      for_char: 🌈
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: † † †
+        char: † † †
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2020
+        - U+0020
+        - U+2020
+        - U+0020
+        - U+2020
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĢł
+          bytes: E2 80 A0
+          lead_byte: E2
+        - token: ĠâĢł
+          bytes: 20 E2 80 A0
+          lead_byte: other
+        - token: ĠâĢł
+          bytes: 20 E2 80 A0
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: †
+        source_rare_name: dagger
+    - control_id: A-003
+      for_char: 🌊
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: ‡ ‡
+        char: ‡ ‡
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2021
+        - U+0020
+        - U+2021
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĢ¡
+          bytes: E2 80 A1
+          lead_byte: E2
+        - token: ĠâĢ
+          bytes: 20 E2 80
+          lead_byte: other
+        - token: ¡
+          bytes: A1
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: ‡
+        source_rare_name: double dagger
+    - control_id: A-004
+      for_char: 🌋
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: → → →
+        char: → → →
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2192
+        - U+0020
+        - U+2192
+        - U+0020
+        - U+2192
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĨĴ
+          bytes: E2 86 92
+          lead_byte: E2
+        - token: ĠâĨĴ
+          bytes: 20 E2 86 92
+          lead_byte: other
+        - token: ĠâĨĴ
+          bytes: 20 E2 86 92
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: →
+        source_rare_name: rightwards arrow
+    - control_id: A-005
+      for_char: 🌍
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: → → →
+        char: → → →
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2192
+        - U+0020
+        - U+2192
+        - U+0020
+        - U+2192
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĨĴ
+          bytes: E2 86 92
+          lead_byte: E2
+        - token: ĠâĨĴ
+          bytes: 20 E2 86 92
+          lead_byte: other
+        - token: ĠâĨĴ
+          bytes: 20 E2 86 92
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: →
+        source_rare_name: rightwards arrow
+    - control_id: A-006
+      for_char: 🌎
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: … … …
+        char: … … …
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2026
+        - U+0020
+        - U+2026
+        - U+0020
+        - U+2026
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĢ¦
+          bytes: E2 80 A6
+          lead_byte: E2
+        - token: ĠâĢ¦
+          bytes: 20 E2 80 A6
+          lead_byte: other
+        - token: ĠâĢ¦
+          bytes: 20 E2 80 A6
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: …
+        source_rare_name: horizontal ellipsis
+    - control_id: A-007
+      for_char: 🌙
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: ′ ′
+        char: ′ ′
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2032
+        - U+0020
+        - U+2032
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĢ²
+          bytes: E2 80 B2
+          lead_byte: E2
+        - token: ĠâĢ
+          bytes: 20 E2 80
+          lead_byte: other
+        - token: ²
+          bytes: B2
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: ′
+        source_rare_name: prime
+    - control_id: A-008
+      for_char: 🌟
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: ″ ″
+        char: ″ ″
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2033
+        - U+0020
+        - U+2033
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĢ³
+          bytes: E2 80 B3
+          lead_byte: E2
+        - token: ĠâĢ
+          bytes: 20 E2 80
+          lead_byte: other
+        - token: ³
+          bytes: B3
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: ″
+        source_rare_name: double prime
+    - control_id: A-009
+      for_char: 🌠
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: ⁄ ⁄
+        char: ⁄ ⁄
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2044
+        - U+0020
+        - U+2044
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âģĦ
+          bytes: E2 81 84
+          lead_byte: E2
+        - token: Ġâģ
+          bytes: 20 E2 81
+          lead_byte: other
+        - token: Ħ
+          bytes: '84'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: ⁄
+        source_rare_name: fraction slash
+    - control_id: A-010
+      for_char: 🍎
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: € € €
+        char: € € €
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+20AC
+        - U+0020
+        - U+20AC
+        - U+0020
+        - U+20AC
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĤ¬
+          bytes: E2 82 AC
+          lead_byte: E2
+        - token: ĠâĤ¬
+          bytes: 20 E2 82 AC
+          lead_byte: other
+        - token: ĠâĤ¬
+          bytes: 20 E2 82 AC
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: €
+        source_rare_name: euro sign
+    - control_id: A-011
+      for_char: 🍕
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: − − −
+        char: − − −
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2212
+        - U+0020
+        - U+2212
+        - U+0020
+        - U+2212
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĪĴ
+          bytes: E2 88 92
+          lead_byte: E2
+        - token: ĠâĪĴ
+          bytes: 20 E2 88 92
+          lead_byte: other
+        - token: ĠâĪĴ
+          bytes: 20 E2 88 92
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: −
+        source_rare_name: minus sign
+    - control_id: A-012
+      for_char: 🎉
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: ∗ ∗
+        char: ∗ ∗
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2217
+        - U+0020
+        - U+2217
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĪĹ
+          bytes: E2 88 97
+          lead_byte: E2
+        - token: ĠâĪ
+          bytes: 20 E2 88
+          lead_byte: other
+        - token: Ĺ
+          bytes: '97'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: ∗
+        source_rare_name: asterisk operator
+    - control_id: A-013
+      for_char: 😀
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: ∶ ∶
+        char: ∶ ∶
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2236
+        - U+0020
+        - U+2236
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĪ¶
+          bytes: E2 88 B6
+          lead_byte: E2
+        - token: ĠâĪ
+          bytes: 20 E2 88
+          lead_byte: other
+        - token: ¶
+          bytes: B6
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: ∶
+        source_rare_name: ratio
+    - control_id: A-014
+      for_char: 😃
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: ∼ ∼ ∼
+        char: ∼ ∼ ∼
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+223C
+        - U+0020
+        - U+223C
+        - U+0020
+        - U+223C
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĪ¼
+          bytes: E2 88 BC
+          lead_byte: E2
+        - token: ĠâĪ¼
+          bytes: 20 E2 88 BC
+          lead_byte: other
+        - token: ĠâĪ¼
+          bytes: 20 E2 88 BC
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: ∼
+        source_rare_name: tilde operator
+    - control_id: A-015
+      for_char: 😄
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: ≤ ≤ ≤
+        char: ≤ ≤ ≤
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2264
+        - U+0020
+        - U+2264
+        - U+0020
+        - U+2264
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âī¤
+          bytes: E2 89 A4
+          lead_byte: E2
+        - token: Ġâī¤
+          bytes: 20 E2 89 A4
+          lead_byte: other
+        - token: Ġâī¤
+          bytes: 20 E2 89 A4
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: ≤
+        source_rare_name: less-than or equal to
+    - control_id: A-016
+      for_char: 😁
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: † † †
+        char: † † †
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2020
+        - U+0020
+        - U+2020
+        - U+0020
+        - U+2020
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĢł
+          bytes: E2 80 A0
+          lead_byte: E2
+        - token: ĠâĢł
+          bytes: 20 E2 80 A0
+          lead_byte: other
+        - token: ĠâĢł
+          bytes: 20 E2 80 A0
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: †
+        source_rare_name: dagger
+    - control_id: A-017
+      for_char: 😆
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: † † †
+        char: † † †
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2020
+        - U+0020
+        - U+2020
+        - U+0020
+        - U+2020
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĢł
+          bytes: E2 80 A0
+          lead_byte: E2
+        - token: ĠâĢł
+          bytes: 20 E2 80 A0
+          lead_byte: other
+        - token: ĠâĢł
+          bytes: 20 E2 80 A0
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: †
+        source_rare_name: dagger
+    - control_id: A-018
+      for_char: 😅
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: ‡ ‡
+        char: ‡ ‡
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2021
+        - U+0020
+        - U+2021
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĢ¡
+          bytes: E2 80 A1
+          lead_byte: E2
+        - token: ĠâĢ
+          bytes: 20 E2 80
+          lead_byte: other
+        - token: ¡
+          bytes: A1
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: ‡
+        source_rare_name: double dagger
+    - control_id: A-019
+      for_char: 😂
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: → → →
+        char: → → →
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2192
+        - U+0020
+        - U+2192
+        - U+0020
+        - U+2192
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĨĴ
+          bytes: E2 86 92
+          lead_byte: E2
+        - token: ĠâĨĴ
+          bytes: 20 E2 86 92
+          lead_byte: other
+        - token: ĠâĨĴ
+          bytes: 20 E2 86 92
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: →
+        source_rare_name: rightwards arrow
+    - control_id: A-020
+      for_char: 🙃
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: → → →
+        char: → → →
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2192
+        - U+0020
+        - U+2192
+        - U+0020
+        - U+2192
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĨĴ
+          bytes: E2 86 92
+          lead_byte: E2
+        - token: ĠâĨĴ
+          bytes: 20 E2 86 92
+          lead_byte: other
+        - token: ĠâĨĴ
+          bytes: 20 E2 86 92
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: →
+        source_rare_name: rightwards arrow
+    - control_id: A-021
+      for_char: 😉
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: … … …
+        char: … … …
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2026
+        - U+0020
+        - U+2026
+        - U+0020
+        - U+2026
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĢ¦
+          bytes: E2 80 A6
+          lead_byte: E2
+        - token: ĠâĢ¦
+          bytes: 20 E2 80 A6
+          lead_byte: other
+        - token: ĠâĢ¦
+          bytes: 20 E2 80 A6
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: …
+        source_rare_name: horizontal ellipsis
+    - control_id: A-022
+      for_char: 😊
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: ′ ′
+        char: ′ ′
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2032
+        - U+0020
+        - U+2032
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĢ²
+          bytes: E2 80 B2
+          lead_byte: E2
+        - token: ĠâĢ
+          bytes: 20 E2 80
+          lead_byte: other
+        - token: ²
+          bytes: B2
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: ′
+        source_rare_name: prime
+    - control_id: A-023
+      for_char: 😍
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: ″ ″
+        char: ″ ″
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2033
+        - U+0020
+        - U+2033
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĢ³
+          bytes: E2 80 B3
+          lead_byte: E2
+        - token: ĠâĢ
+          bytes: 20 E2 80
+          lead_byte: other
+        - token: ³
+          bytes: B3
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: ″
+        source_rare_name: double prime
+    - control_id: A-024
+      for_char: 🙂
+      matched_token_count: 2
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a
+        char: 3a
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        expected_lead_byte: other
+        expected_fragment_count: 2
+        actual_fragment_count: 2
+        actual_lead_bytes:
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        per_template_token_counts:
+        - 2
+        - 2
+        - 2
+        mismatch_flags: []
+      rare_char:
+        text: € €
+        char: € €
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+20AC
+        - U+0020
+        - U+20AC
+        expected_lead_byte: E2
+        expected_fragment_count: 2
+        actual_fragment_count: 2
+        actual_lead_bytes:
+        - E2
+        - other
+        token_split:
+        - token: âĤ¬
+          bytes: E2 82 AC
+          lead_byte: E2
+        - token: ĠâĤ¬
+          bytes: 20 E2 82 AC
+          lead_byte: other
+        per_template_token_counts:
+        - 2
+        - 2
+        - 2
+        mismatch_flags: []
+        source_rare_char: €
+        source_rare_name: euro sign
+    - control_id: A-025
+      for_char: 🚀
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: € € €
+        char: € € €
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+20AC
+        - U+0020
+        - U+20AC
+        - U+0020
+        - U+20AC
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĤ¬
+          bytes: E2 82 AC
+          lead_byte: E2
+        - token: ĠâĤ¬
+          bytes: 20 E2 82 AC
+          lead_byte: other
+        - token: ĠâĤ¬
+          bytes: 20 E2 82 AC
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: €
+        source_rare_name: euro sign
+    - control_id: A-026
+      for_char: 🚁
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: − − −
+        char: − − −
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2212
+        - U+0020
+        - U+2212
+        - U+0020
+        - U+2212
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĪĴ
+          bytes: E2 88 92
+          lead_byte: E2
+        - token: ĠâĪĴ
+          bytes: 20 E2 88 92
+          lead_byte: other
+        - token: ĠâĪĴ
+          bytes: 20 E2 88 92
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: −
+        source_rare_name: minus sign
+    - control_id: A-027
+      for_char: 🚂
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: ∗ ∗
+        char: ∗ ∗
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2217
+        - U+0020
+        - U+2217
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĪĹ
+          bytes: E2 88 97
+          lead_byte: E2
+        - token: ĠâĪ
+          bytes: 20 E2 88
+          lead_byte: other
+        - token: Ĺ
+          bytes: '97'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: ∗
+        source_rare_name: asterisk operator
+    - control_id: A-028
+      for_char: 🚄
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: ∶ ∶
+        char: ∶ ∶
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2236
+        - U+0020
+        - U+2236
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĪ¶
+          bytes: E2 88 B6
+          lead_byte: E2
+        - token: ĠâĪ
+          bytes: 20 E2 88
+          lead_byte: other
+        - token: ¶
+          bytes: B6
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: ∶
+        source_rare_name: ratio
+    - control_id: A-029
+      for_char: 🚅
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: ∼ ∼ ∼
+        char: ∼ ∼ ∼
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+223C
+        - U+0020
+        - U+223C
+        - U+0020
+        - U+223C
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĪ¼
+          bytes: E2 88 BC
+          lead_byte: E2
+        - token: ĠâĪ¼
+          bytes: 20 E2 88 BC
+          lead_byte: other
+        - token: ĠâĪ¼
+          bytes: 20 E2 88 BC
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: ∼
+        source_rare_name: tilde operator
+    - control_id: A-030
+      for_char: 🚆
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: ≤ ≤ ≤
+        char: ≤ ≤ ≤
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2264
+        - U+0020
+        - U+2264
+        - U+0020
+        - U+2264
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âī¤
+          bytes: E2 89 A4
+          lead_byte: E2
+        - token: Ġâī¤
+          bytes: 20 E2 89 A4
+          lead_byte: other
+        - token: Ġâī¤
+          bytes: 20 E2 89 A4
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: ≤
+        source_rare_name: less-than or equal to
+    - control_id: A-031
+      for_char: 🚇
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: † † †
+        char: † † †
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2020
+        - U+0020
+        - U+2020
+        - U+0020
+        - U+2020
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĢł
+          bytes: E2 80 A0
+          lead_byte: E2
+        - token: ĠâĢł
+          bytes: 20 E2 80 A0
+          lead_byte: other
+        - token: ĠâĢł
+          bytes: 20 E2 80 A0
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: †
+        source_rare_name: dagger
+    - control_id: A-032
+      for_char: 🚊
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: † † †
+        char: † † †
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2020
+        - U+0020
+        - U+2020
+        - U+0020
+        - U+2020
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĢł
+          bytes: E2 80 A0
+          lead_byte: E2
+        - token: ĠâĢł
+          bytes: 20 E2 80 A0
+          lead_byte: other
+        - token: ĠâĢł
+          bytes: 20 E2 80 A0
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: †
+        source_rare_name: dagger
+    - control_id: A-033
+      for_char: 🚌
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: ‡ ‡
+        char: ‡ ‡
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2021
+        - U+0020
+        - U+2021
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĢ¡
+          bytes: E2 80 A1
+          lead_byte: E2
+        - token: ĠâĢ
+          bytes: 20 E2 80
+          lead_byte: other
+        - token: ¡
+          bytes: A1
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: ‡
+        source_rare_name: double dagger
+    - control_id: A-034
+      for_char: 🚑
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: → → →
+        char: → → →
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2192
+        - U+0020
+        - U+2192
+        - U+0020
+        - U+2192
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĨĴ
+          bytes: E2 86 92
+          lead_byte: E2
+        - token: ĠâĨĴ
+          bytes: 20 E2 86 92
+          lead_byte: other
+        - token: ĠâĨĴ
+          bytes: 20 E2 86 92
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: →
+        source_rare_name: rightwards arrow
+    - control_id: A-035
+      for_char: 🚕
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: → → →
+        char: → → →
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2192
+        - U+0020
+        - U+2192
+        - U+0020
+        - U+2192
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĨĴ
+          bytes: E2 86 92
+          lead_byte: E2
+        - token: ĠâĨĴ
+          bytes: 20 E2 86 92
+          lead_byte: other
+        - token: ĠâĨĴ
+          bytes: 20 E2 86 92
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: →
+        source_rare_name: rightwards arrow
+    - control_id: A-036
+      for_char: 🚲
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: … … …
+        char: … … …
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2026
+        - U+0020
+        - U+2026
+        - U+0020
+        - U+2026
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĢ¦
+          bytes: E2 80 A6
+          lead_byte: E2
+        - token: ĠâĢ¦
+          bytes: 20 E2 80 A6
+          lead_byte: other
+        - token: ĠâĢ¦
+          bytes: 20 E2 80 A6
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: …
+        source_rare_name: horizontal ellipsis
+    - control_id: A-037
+      for_char: 🤔
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: ′ ′
+        char: ′ ′
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2032
+        - U+0020
+        - U+2032
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĢ²
+          bytes: E2 80 B2
+          lead_byte: E2
+        - token: ĠâĢ
+          bytes: 20 E2 80
+          lead_byte: other
+        - token: ²
+          bytes: B2
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: ′
+        source_rare_name: prime
+    - control_id: A-038
+      for_char: 🤗
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: ″ ″
+        char: ″ ″
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2033
+        - U+0020
+        - U+2033
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĢ³
+          bytes: E2 80 B3
+          lead_byte: E2
+        - token: ĠâĢ
+          bytes: 20 E2 80
+          lead_byte: other
+        - token: ³
+          bytes: B3
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: ″
+        source_rare_name: double prime
+    - control_id: A-039
+      for_char: 🤠
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: ⁄ ⁄
+        char: ⁄ ⁄
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2044
+        - U+0020
+        - U+2044
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âģĦ
+          bytes: E2 81 84
+          lead_byte: E2
+        - token: Ġâģ
+          bytes: 20 E2 81
+          lead_byte: other
+        - token: Ħ
+          bytes: '84'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: ⁄
+        source_rare_name: fraction slash
+    - control_id: A-040
+      for_char: 🤡
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: € € €
+        char: € € €
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+20AC
+        - U+0020
+        - U+20AC
+        - U+0020
+        - U+20AC
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĤ¬
+          bytes: E2 82 AC
+          lead_byte: E2
+        - token: ĠâĤ¬
+          bytes: 20 E2 82 AC
+          lead_byte: other
+        - token: ĠâĤ¬
+          bytes: 20 E2 82 AC
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: €
+        source_rare_name: euro sign
+    - control_id: A-041
+      for_char: 🤢
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: − − −
+        char: − − −
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2212
+        - U+0020
+        - U+2212
+        - U+0020
+        - U+2212
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĪĴ
+          bytes: E2 88 92
+          lead_byte: E2
+        - token: ĠâĪĴ
+          bytes: 20 E2 88 92
+          lead_byte: other
+        - token: ĠâĪĴ
+          bytes: 20 E2 88 92
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: −
+        source_rare_name: minus sign
+    - control_id: A-042
+      for_char: 🤧
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: ∗ ∗
+        char: ∗ ∗
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2217
+        - U+0020
+        - U+2217
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĪĹ
+          bytes: E2 88 97
+          lead_byte: E2
+        - token: ĠâĪ
+          bytes: 20 E2 88
+          lead_byte: other
+        - token: Ĺ
+          bytes: '97'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: ∗
+        source_rare_name: asterisk operator
+    - control_id: A-043
+      for_char: 🤯
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: ∶ ∶
+        char: ∶ ∶
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2236
+        - U+0020
+        - U+2236
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĪ¶
+          bytes: E2 88 B6
+          lead_byte: E2
+        - token: ĠâĪ
+          bytes: 20 E2 88
+          lead_byte: other
+        - token: ¶
+          bytes: B6
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: ∶
+        source_rare_name: ratio
+    - control_id: A-044
+      for_char: 🤩
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: ∼ ∼ ∼
+        char: ∼ ∼ ∼
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+223C
+        - U+0020
+        - U+223C
+        - U+0020
+        - U+223C
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĪ¼
+          bytes: E2 88 BC
+          lead_byte: E2
+        - token: ĠâĪ¼
+          bytes: 20 E2 88 BC
+          lead_byte: other
+        - token: ĠâĪ¼
+          bytes: 20 E2 88 BC
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: ∼
+        source_rare_name: tilde operator
+    - control_id: A-045
+      for_char: 🤫
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: ≤ ≤ ≤
+        char: ≤ ≤ ≤
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2264
+        - U+0020
+        - U+2264
+        - U+0020
+        - U+2264
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âī¤
+          bytes: E2 89 A4
+          lead_byte: E2
+        - token: Ġâī¤
+          bytes: 20 E2 89 A4
+          lead_byte: other
+        - token: Ġâī¤
+          bytes: 20 E2 89 A4
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: ≤
+        source_rare_name: less-than or equal to
+    - control_id: A-046
+      for_char: 🤭
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: † † †
+        char: † † †
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2020
+        - U+0020
+        - U+2020
+        - U+0020
+        - U+2020
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĢł
+          bytes: E2 80 A0
+          lead_byte: E2
+        - token: ĠâĢł
+          bytes: 20 E2 80 A0
+          lead_byte: other
+        - token: ĠâĢł
+          bytes: 20 E2 80 A0
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: †
+        source_rare_name: dagger
+    - control_id: A-047
+      for_char: 🤖
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: † † †
+        char: † † †
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2020
+        - U+0020
+        - U+2020
+        - U+0020
+        - U+2020
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĢł
+          bytes: E2 80 A0
+          lead_byte: E2
+        - token: ĠâĢł
+          bytes: 20 E2 80 A0
+          lead_byte: other
+        - token: ĠâĢł
+          bytes: 20 E2 80 A0
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: †
+        source_rare_name: dagger
+    - control_id: A-048
+      for_char: 🧠
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: ‡ ‡
+        char: ‡ ‡
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2021
+        - U+0020
+        - U+2021
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĢ¡
+          bytes: E2 80 A1
+          lead_byte: E2
+        - token: ĠâĢ
+          bytes: 20 E2 80
+          lead_byte: other
+        - token: ¡
+          bytes: A1
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: ‡
+        source_rare_name: double dagger
+    - control_id: A-049
+      for_char: 🩰
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: → → →
+        char: → → →
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2192
+        - U+0020
+        - U+2192
+        - U+0020
+        - U+2192
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĨĴ
+          bytes: E2 86 92
+          lead_byte: E2
+        - token: ĠâĨĴ
+          bytes: 20 E2 86 92
+          lead_byte: other
+        - token: ĠâĨĴ
+          bytes: 20 E2 86 92
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: →
+        source_rare_name: rightwards arrow
+    - control_id: A-050
+      for_char: 🩱
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: → → →
+        char: → → →
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2192
+        - U+0020
+        - U+2192
+        - U+0020
+        - U+2192
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĨĴ
+          bytes: E2 86 92
+          lead_byte: E2
+        - token: ĠâĨĴ
+          bytes: 20 E2 86 92
+          lead_byte: other
+        - token: ĠâĨĴ
+          bytes: 20 E2 86 92
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: →
+        source_rare_name: rightwards arrow
+    - control_id: A-051
+      for_char: 🩲
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: … … …
+        char: … … …
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2026
+        - U+0020
+        - U+2026
+        - U+0020
+        - U+2026
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĢ¦
+          bytes: E2 80 A6
+          lead_byte: E2
+        - token: ĠâĢ¦
+          bytes: 20 E2 80 A6
+          lead_byte: other
+        - token: ĠâĢ¦
+          bytes: 20 E2 80 A6
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: …
+        source_rare_name: horizontal ellipsis
+    - control_id: A-052
+      for_char: 🩳
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: ′ ′
+        char: ′ ′
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2032
+        - U+0020
+        - U+2032
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĢ²
+          bytes: E2 80 B2
+          lead_byte: E2
+        - token: ĠâĢ
+          bytes: 20 E2 80
+          lead_byte: other
+        - token: ²
+          bytes: B2
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: ′
+        source_rare_name: prime
+    - control_id: A-053
+      for_char: 🩴
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: ″ ″
+        char: ″ ″
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2033
+        - U+0020
+        - U+2033
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĢ³
+          bytes: E2 80 B3
+          lead_byte: E2
+        - token: ĠâĢ
+          bytes: 20 E2 80
+          lead_byte: other
+        - token: ³
+          bytes: B3
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: ″
+        source_rare_name: double prime
+    - control_id: A-054
+      for_char: 🪀
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: ⁄ ⁄
+        char: ⁄ ⁄
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2044
+        - U+0020
+        - U+2044
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âģĦ
+          bytes: E2 81 84
+          lead_byte: E2
+        - token: Ġâģ
+          bytes: 20 E2 81
+          lead_byte: other
+        - token: Ħ
+          bytes: '84'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: ⁄
+        source_rare_name: fraction slash
+    - control_id: A-055
+      for_char: 🪁
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: € € €
+        char: € € €
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+20AC
+        - U+0020
+        - U+20AC
+        - U+0020
+        - U+20AC
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĤ¬
+          bytes: E2 82 AC
+          lead_byte: E2
+        - token: ĠâĤ¬
+          bytes: 20 E2 82 AC
+          lead_byte: other
+        - token: ĠâĤ¬
+          bytes: 20 E2 82 AC
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: €
+        source_rare_name: euro sign
+    - control_id: A-056
+      for_char: 🪂
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: − − −
+        char: − − −
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2212
+        - U+0020
+        - U+2212
+        - U+0020
+        - U+2212
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĪĴ
+          bytes: E2 88 92
+          lead_byte: E2
+        - token: ĠâĪĴ
+          bytes: 20 E2 88 92
+          lead_byte: other
+        - token: ĠâĪĴ
+          bytes: 20 E2 88 92
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: −
+        source_rare_name: minus sign
+    - control_id: A-057
+      for_char: 🪄
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: ∗ ∗
+        char: ∗ ∗
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2217
+        - U+0020
+        - U+2217
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĪĹ
+          bytes: E2 88 97
+          lead_byte: E2
+        - token: ĠâĪ
+          bytes: 20 E2 88
+          lead_byte: other
+        - token: Ĺ
+          bytes: '97'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: ∗
+        source_rare_name: asterisk operator
+    - control_id: A-058
+      for_char: 🪅
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: ∶ ∶
+        char: ∶ ∶
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2236
+        - U+0020
+        - U+2236
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĪ¶
+          bytes: E2 88 B6
+          lead_byte: E2
+        - token: ĠâĪ
+          bytes: 20 E2 88
+          lead_byte: other
+        - token: ¶
+          bytes: B6
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: ∶
+        source_rare_name: ratio
+    - control_id: A-059
+      for_char: 🪩
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: ∼ ∼ ∼
+        char: ∼ ∼ ∼
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+223C
+        - U+0020
+        - U+223C
+        - U+0020
+        - U+223C
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âĪ¼
+          bytes: E2 88 BC
+          lead_byte: E2
+        - token: ĠâĪ¼
+          bytes: 20 E2 88 BC
+          lead_byte: other
+        - token: ĠâĪ¼
+          bytes: 20 E2 88 BC
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: ∼
+        source_rare_name: tilde operator
+    - control_id: A-060
+      for_char: 🪆
+      matched_token_count: 3
+      carrier_rule: same filler token count in each of the three scripts/09_attention_theft.py carriers
+      hex_fragment:
+        text: 3a7
+        char: 3a7
+        kind: matched_hex
+        name: matched hex
+        codepoints:
+        - U+0033
+        - U+0061
+        - U+0037
+        expected_lead_byte: other
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - other
+        - other
+        - other
+        token_split:
+        - token: '3'
+          bytes: '33'
+          lead_byte: other
+        - token: a
+          bytes: '61'
+          lead_byte: other
+        - token: '7'
+          bytes: '37'
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+      rare_char:
+        text: ≤ ≤ ≤
+        char: ≤ ≤ ≤
+        kind: matched_rare_char
+        name: matched rare char
+        codepoints:
+        - U+2264
+        - U+0020
+        - U+2264
+        - U+0020
+        - U+2264
+        expected_lead_byte: E2
+        expected_fragment_count: 3
+        actual_fragment_count: 3
+        actual_lead_bytes:
+        - E2
+        - other
+        - other
+        token_split:
+        - token: âī¤
+          bytes: E2 89 A4
+          lead_byte: E2
+        - token: Ġâī¤
+          bytes: 20 E2 89 A4
+          lead_byte: other
+        - token: Ġâī¤
+          bytes: 20 E2 89 A4
+          lead_byte: other
+        per_template_token_counts:
+        - 3
+        - 3
+        - 3
+        mismatch_flags: []
+        source_rare_char: ≤
+        source_rare_name: less-than or equal to
